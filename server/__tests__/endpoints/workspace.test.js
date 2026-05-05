@@ -6,19 +6,20 @@ const prisma = require("../../utils/prisma");
 
 describe("Workspace hierarchy model methods", () => {
   let root, child1, child2, grandchild;
+  const prefix = `wt-${Date.now()}`;
 
   beforeAll(async () => {
-    const r = await Workspace.new("Test Root", null, {});
+    const r = await Workspace.new(`${prefix} Root`, null, {});
     root = r.workspace;
-    const c1 = await Workspace.new("Test Child One", null, {
+    const c1 = await Workspace.new(`${prefix} Child One`, null, {
       parentWorkspaceId: root.id,
     });
     child1 = c1.workspace;
-    const c2 = await Workspace.new("Test Child Two", null, {
+    const c2 = await Workspace.new(`${prefix} Child Two`, null, {
       parentWorkspaceId: root.id,
     });
     child2 = c2.workspace;
-    const gc = await Workspace.new("Test Grandchild", null, {
+    const gc = await Workspace.new(`${prefix} Grandchild`, null, {
       parentWorkspaceId: child1.id,
     });
     grandchild = gc.workspace;

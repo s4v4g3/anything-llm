@@ -6,6 +6,7 @@ import WorkspaceName from "./WorkspaceName";
 import SuggestedChatMessages from "./SuggestedChatMessages";
 import DeleteWorkspace from "./DeleteWorkspace";
 import CTAButton from "@/components/lib/CTAButton";
+import WorkspaceHierarchy from "./WorkspaceHierarchy";
 
 export default function GeneralInfo({ slug }) {
   const [workspace, setWorkspace] = useState(null);
@@ -64,6 +65,10 @@ export default function GeneralInfo({ slug }) {
         />
       </form>
       <SuggestedChatMessages slug={workspace.slug} />
+      <WorkspaceHierarchy
+        workspace={workspace}
+        onUpdate={(updated) => setWorkspace(updated)}
+      />
       <DeleteWorkspace workspace={workspace} />
     </div>
   );

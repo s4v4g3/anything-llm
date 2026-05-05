@@ -169,6 +169,13 @@ These choices affect the implementation at every layer. We should lock these in 
 4. **Performance** — Lazy-load deep tree branches, paginate large sibling lists
 5. **Mobile/embed** — Ensure embedded chat widget handles workspace hierarchy gracefully
 
+## Phase 7: Minor Fixes
+
+### Tasks
+
+1. **Fix breadcrumb display** -- currently overlaps with model selector
+2. **Improve New Sub-workspace creation** -- currently uses a system modal
+
 ---
 
 ## Implementation Order & Dependencies

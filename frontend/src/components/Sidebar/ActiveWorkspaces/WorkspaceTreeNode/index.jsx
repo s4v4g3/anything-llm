@@ -22,6 +22,9 @@ export default function WorkspaceTreeNode({
   isExpanded,
   toggleExpanded,
   onCreateSubWorkspace,
+  onSubmitNewSubWorkspace,
+  creatingUnder,
+  onCancelCreate,
   onManageWorkspace,
   activeSlug,
   isInWorkspaceSettings,
@@ -213,6 +216,9 @@ export default function WorkspaceTreeNode({
               isExpanded={isExpanded}
               toggleExpanded={toggleExpanded}
               onCreateSubWorkspace={onCreateSubWorkspace}
+              onSubmitNewSubWorkspace={onSubmitNewSubWorkspace}
+              creatingUnder={creatingUnder}
+              onCancelCreate={onCancelCreate}
               onManageWorkspace={onManageWorkspace}
               activeSlug={activeSlug}
               isInWorkspaceSettings={isInWorkspaceSettings}
@@ -220,6 +226,69 @@ export default function WorkspaceTreeNode({
           ))}
         </div>
       )}
+
+      {/* Inline input for new sub-workspace */}
+      {creatingUnder === workspace.id && (
+        <InlineNewWorkspaceInput
+          depth={depth + 1}
+          onSubmit={(name) => onSubmitNewSubWorkspace(workspace, name)}
+          onCancel={onCancelCreate}
+        />
+      )}
+    </div>
+  );
+}
+
+/**
+ * Inline input that appears in the tree for creating a new sub-workspace.
+ * Auto-focuses, submits on Enter, cancels on Escape or blur with empty value.
+ */
+function InlineNewWorkspaceInput({ depth, onSubmit, onCancel }) {
+  const inputRef = useRef(null);
+  const [value, setValue] = useState("");
+
+  useEffect(() => {
+    // Small delay to ensure DOM is rendered before focusing
+    const timer = setTimeout(() => inputRef.current?.focus(), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onSubmit(value);
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      onCancel();
+    }
+  };
+
+  const handleBlur = () => {
+    if (value.trim()) {
+      onSubmit(value);
+    } else {
+      onCancel();
+    }
+  };
+
+  const indentPx = depth * 16;
+
+  return (
+    <div
+      className="flex items-center gap-x-1 w-full py-[3px]"
+      style={{ paddingLeft: `${4 + indentPx + 18}px` }}
+    >
+      <Plus size={12} className="text-zinc-500 flex-shrink-0" />
+      <input
+        ref={inputRef}
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={handleKeyDown}
+        onBlur={handleBlur}
+        placeholder="Workspace name..."
+        className="flex-grow min-w-0 bg-zinc-700 light:bg-slate-200 text-white light:text-slate-900 text-[13px] px-2 py-[2px] rounded border border-zinc-600 light:border-slate-300 focus:border-blue-500 focus:outline-none placeholder:text-zinc-500 light:placeholder:text-slate-400"
+      />
     </div>
   );
 }

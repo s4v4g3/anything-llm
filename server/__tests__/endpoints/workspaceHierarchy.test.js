@@ -6,15 +6,16 @@ const prisma = require("../../utils/prisma");
 
 describe("Workspace.move()", () => {
   let root, child, grandchild, sibling;
+  const prefix = `mv-${Date.now()}`;
 
   beforeAll(async () => {
-    const r = await Workspace.new("Move Root", null, {});
+    const r = await Workspace.new(`${prefix} Root`, null, {});
     root = r.workspace;
-    const c = await Workspace.new("Move Child", null, { parentWorkspaceId: root.id });
+    const c = await Workspace.new(`${prefix} Child`, null, { parentWorkspaceId: root.id });
     child = c.workspace;
-    const gc = await Workspace.new("Move GC", null, { parentWorkspaceId: child.id });
+    const gc = await Workspace.new(`${prefix} GC`, null, { parentWorkspaceId: child.id });
     grandchild = gc.workspace;
-    const s = await Workspace.new("Move Sibling", null, { parentWorkspaceId: root.id });
+    const s = await Workspace.new(`${prefix} Sibling`, null, { parentWorkspaceId: root.id });
     sibling = s.workspace;
   });
 
@@ -89,13 +90,14 @@ describe("Workspace.move()", () => {
 
 describe("Workspace.deleteWithSubtree()", () => {
   let root, child, grandchild;
+  const prefix = `dt-${Date.now()}`;
 
   beforeAll(async () => {
-    const r = await Workspace.new("DelTree Root", null, {});
+    const r = await Workspace.new(`${prefix} Root`, null, {});
     root = r.workspace;
-    const c = await Workspace.new("DelTree Child", null, { parentWorkspaceId: root.id });
+    const c = await Workspace.new(`${prefix} Child`, null, { parentWorkspaceId: root.id });
     child = c.workspace;
-    const gc = await Workspace.new("DelTree GC", null, { parentWorkspaceId: child.id });
+    const gc = await Workspace.new(`${prefix} GC`, null, { parentWorkspaceId: child.id });
     grandchild = gc.workspace;
   });
 
@@ -126,17 +128,18 @@ describe("Workspace.deleteWithSubtree()", () => {
 
 describe("Workspace.deleteAndPromoteChildren()", () => {
   let root, parent, child1, child2, grandchild;
+  const prefix = `dp-${Date.now()}`;
 
   beforeAll(async () => {
-    const r = await Workspace.new("Promote Root", null, {});
+    const r = await Workspace.new(`${prefix} Root`, null, {});
     root = r.workspace;
-    const p = await Workspace.new("Promote Parent", null, { parentWorkspaceId: root.id });
+    const p = await Workspace.new(`${prefix} Parent`, null, { parentWorkspaceId: root.id });
     parent = p.workspace;
-    const c1 = await Workspace.new("Promote C1", null, { parentWorkspaceId: parent.id });
+    const c1 = await Workspace.new(`${prefix} C1`, null, { parentWorkspaceId: parent.id });
     child1 = c1.workspace;
-    const c2 = await Workspace.new("Promote C2", null, { parentWorkspaceId: parent.id });
+    const c2 = await Workspace.new(`${prefix} C2`, null, { parentWorkspaceId: parent.id });
     child2 = c2.workspace;
-    const gc = await Workspace.new("Promote GC", null, { parentWorkspaceId: child1.id });
+    const gc = await Workspace.new(`${prefix} GC`, null, { parentWorkspaceId: child1.id });
     grandchild = gc.workspace;
   });
 

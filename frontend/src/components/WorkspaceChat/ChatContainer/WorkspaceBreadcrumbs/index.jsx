@@ -26,7 +26,7 @@ export default function WorkspaceBreadcrumbs({ workspace }) {
   return (
     <nav
       aria-label="Workspace breadcrumbs"
-      className="flex items-center gap-x-1 px-4 py-1.5 text-xs text-zinc-400 light:text-slate-500 border-b border-white/5 light:border-slate-200 bg-zinc-900/50 light:bg-slate-50"
+      className="absolute top-9 md:top-9 left-0 right-0 z-10 flex items-center gap-x-1 px-4 py-1 text-xs text-zinc-400 light:text-slate-500 bg-zinc-900/80 light:bg-slate-50/90 backdrop-blur-sm"
     >
       {breadcrumbs.map((crumb, idx) => {
         const isLast = idx === breadcrumbs.length - 1;

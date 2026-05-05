@@ -17,6 +17,8 @@ import { safeJsonParse } from "@/utils/request";
 export default function ActiveWorkspaces() {
   const { slug } = useParams();
   const [selectedWs, setSelectedWs] = useState(null);
+  const [creatingUnder, setCreatingUnder] = useState(null); // workspace being given a new child
+  const [filterText, setFilterText] = useState("");
   const { showing, showModal, hideModal } = useManageWorkspaceModal();
   const { user } = useUser();
   const isInWorkspaceSettings = !!useMatch("/workspace/:slug/settings/:tab");
@@ -65,9 +67,14 @@ export default function ActiveWorkspaces() {
   })();
 
   const handleCreateSubWorkspace = async (parentWorkspace) => {
-    const name = window.prompt(
-      `Create a sub-workspace under "${parentWorkspace.name}":`
-    );
+    // Show inline input field under this workspace
+    setCreatingUnder(parentWorkspace.id);
+    // Ensure the parent is expanded so the inline input is visible
+    if (!isExpanded(parentWorkspace.id)) toggleExpanded(parentWorkspace.id);
+  };
+
+  const handleSubmitNewSubWorkspace = async (parentWorkspace, name) => {
+    setCreatingUnder(null);
     if (!name || !name.trim()) return;
     const { workspace, message } = await Workspace.newSubWorkspace(
       parentWorkspace.slug,
@@ -86,9 +93,27 @@ export default function ActiveWorkspaces() {
     showModal();
   };
 
+  // Filter tree recursively — keep nodes that match or have matching descendants
+  const filteredTree = filterText.trim()
+    ? filterTreeNodes(tree, filterText.trim().toLowerCase())
+    : tree;
+
+  const showFilter = tree.length > 3 || tree.some((w) => w.children?.length > 0);
+
   return (
     <div role="tree" aria-label="Workspaces" className="flex flex-col gap-y-1">
-      {tree.map((workspace) => (
+      {showFilter && (
+        <div className="px-1 mb-1">
+          <input
+            type="text"
+            value={filterText}
+            onChange={(e) => setFilterText(e.target.value)}
+            placeholder="Filter workspaces..."
+            className="w-full bg-zinc-800 light:bg-slate-100 text-white light:text-slate-900 text-xs px-2 py-1.5 rounded border border-zinc-700 light:border-slate-300 focus:border-blue-500 focus:outline-none placeholder:text-zinc-500 light:placeholder:text-slate-400"
+          />
+        </div>
+      )}
+      {filteredTree.map((workspace) => (
         <WorkspaceTreeNode
           key={workspace.id}
           workspace={workspace}
@@ -96,11 +121,19 @@ export default function ActiveWorkspaces() {
           isExpanded={isExpanded}
           toggleExpanded={toggleExpanded}
           onCreateSubWorkspace={handleCreateSubWorkspace}
+          onSubmitNewSubWorkspace={handleSubmitNewSubWorkspace}
+          creatingUnder={creatingUnder}
+          onCancelCreate={() => setCreatingUnder(null)}
           onManageWorkspace={handleManageWorkspace}
           activeSlug={activeSlug}
           isInWorkspaceSettings={isInWorkspaceSettings}
         />
       ))}
+      {filteredTree.length === 0 && filterText.trim() && (
+        <p className="text-zinc-500 light:text-slate-400 text-xs px-2 py-1">
+          No workspaces match "{filterText}"
+        </p>
+      )}
       {showing && (
         <ManageWorkspace
           hideModal={hideModal}
@@ -111,3 +144,23 @@ export default function ActiveWorkspaces() {
   );
 }
 
+/**
+ * Recursively filter tree nodes — keeps a node if it or any descendant matches.
+ * Preserved descendants are also filtered so only matching branches show.
+ */
+function filterTreeNodes(nodes, query) {
+  const results = [];
+  for (const node of nodes) {
+    const nameMatches = node.name.toLowerCase().includes(query);
+    const filteredChildren = node.children?.length
+      ? filterTreeNodes(node.children, query)
+      : [];
+    if (nameMatches || filteredChildren.length > 0) {
+      results.push({
+        ...node,
+        children: nameMatches ? node.children : filteredChildren,
+      });
+    }
+  }
+  return results;
+}
