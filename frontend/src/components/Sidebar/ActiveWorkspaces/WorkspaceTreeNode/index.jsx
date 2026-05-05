@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useParams, useMatch, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   CaretRight,
   CaretDown,
@@ -28,6 +28,7 @@ export default function WorkspaceTreeNode({
   onManageWorkspace,
   activeSlug,
   isInWorkspaceSettings,
+  hasNext = false,
 }) {
   const navigate = useNavigate();
   const { user } = useUser();
@@ -49,11 +50,13 @@ export default function WorkspaceTreeNode({
   }, [showContextMenu]);
 
   const indentPx = depth * 16;
+  const isChild = depth > 0;
+  const CONNECTOR_WIDTH = 14;
 
   return (
     <div className="flex flex-col w-full" role="treeitem" aria-expanded={hasChildren ? expanded : undefined}>
       <div
-        className={`flex items-center gap-x-1 group w-full rounded-[4px] py-[4px] pr-[6px] transition-all duration-150
+        className={`relative flex items-center gap-x-1 group w-full rounded-[4px] py-[4px] pr-[6px] transition-all duration-150
           ${isActive ? "bg-theme-sidebar-item-default light:bg-blue-200 font-bold" : "hover:bg-theme-sidebar-subitem-hover light:hover:bg-slate-300"}
         `}
         style={{ paddingLeft: `${4 + indentPx}px` }}
@@ -62,6 +65,28 @@ export default function WorkspaceTreeNode({
           if (user?.role !== "default") setShowContextMenu(true);
         }}
       >
+        {/* Curved connector line from parent (only for child workspaces) */}
+        {isChild && (
+          <div
+            style={{ width: CONNECTOR_WIDTH / 2, left: `${indentPx - 9}px` }}
+            className={`${
+              isActive
+                ? "border-l-2 border-b-2 border-white light:border-blue-800 z-[2]"
+                : "border-l border-b border-zinc-500 light:border-slate-400 z-[1]"
+            } h-[50%] absolute top-0 rounded-bl-lg`}
+          />
+        )}
+        {/* Downstroke continuation line for next sibling */}
+        {isChild && hasNext && (
+          <div
+            style={{ width: CONNECTOR_WIDTH / 2, left: `${indentPx - 9}px` }}
+            className={`${
+              isActive
+                ? "border-l-2 border-white light:border-blue-800 z-[2]"
+                : "border-l border-zinc-500 light:border-slate-400 z-[1]"
+            } h-[100%] absolute top-0`}
+          />
+        )}
         {/* Expand/collapse chevron */}
         <button
           type="button"
@@ -208,7 +233,7 @@ export default function WorkspaceTreeNode({
       {/* Children (recursive) */}
       {hasChildren && expanded && (
         <div role="group" className="flex flex-col">
-          {workspace.children.map((child) => (
+          {workspace.children.map((child, idx) => (
             <WorkspaceTreeNode
               key={child.id}
               workspace={child}
@@ -222,6 +247,7 @@ export default function WorkspaceTreeNode({
               onManageWorkspace={onManageWorkspace}
               activeSlug={activeSlug}
               isInWorkspaceSettings={isInWorkspaceSettings}
+              hasNext={idx < workspace.children.length - 1}
             />
           ))}
         </div>
