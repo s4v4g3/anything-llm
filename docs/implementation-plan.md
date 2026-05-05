@@ -56,20 +56,22 @@ These choices affect the implementation at every layer. We should lock these in 
 
 ## Phase 2: Vector DB Layer
 
-**Goal**: RAG searches can optionally span a workspace subtree.
+**Goal**: RAG searches can span the workspace's scope chain (ancestors + descendants) based on per-workspace settings.
 
 ### Tasks
 
 1. **Namespace strategy update** — When embedding documents, use the workspace's own slug as namespace (unchanged behavior). The hierarchy is handled at query time, not storage time.
 
 2. **Multi-namespace search** (`server/utils/vectorDbProviders/`):
-   - Add `performSubtreeSimilaritySearch()` to base class
-   - Implementation: query each descendant namespace, merge and re-rank results
+   - Add `performScopedSimilaritySearch()` — accepts an array of namespace slugs (from `Workspace.getScopeChainSlugs()`)
+   - Implementation: query each namespace in the scope chain, merge and re-rank results
    - Respect `topN` and `similarityThreshold` across merged results
+   - Falls back to single-namespace search when scope chain has only one entry (no overhead for flat workspaces)
 
 3. **Update chat handler** (`server/utils/chats/stream.js`):
-   - Check workspace setting `includeSubWorkspaceDocs`
-   - If enabled, use subtree search instead of single-namespace search
+   - Use `Workspace.getScopeChainSlugs(workspace)` to determine search scope
+   - If scope chain length > 1, use scoped search; otherwise use existing single-namespace search
+   - Both `includeChildDocs` and `includeAncestorDocs` settings are already on the workspace object
 
 4. **Tests** — Integration tests with LanceDB (local, no external deps)
 

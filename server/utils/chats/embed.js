@@ -36,10 +36,22 @@ async function streamChatWithForEmbed(
     model: chatModel ?? embed.workspace?.chatModel,
   });
   const VectorDb = getVectorDbClass();
+  const { Workspace } = require("../../models/workspace");
 
   const messageLimit = embed.message_limit ?? 20;
+
+  // Determine the scope chain for vector search
+  const scopeChainSlugs = await Workspace.getScopeChainSlugs(embed.workspace);
   const hasVectorizedSpace = await VectorDb.hasNamespace(embed.workspace.slug);
-  const embeddingsCount = await VectorDb.namespaceCount(embed.workspace.slug);
+  let embeddingsCount = await VectorDb.namespaceCount(embed.workspace.slug);
+
+  // If scoped search is active, check if any namespace in the chain has embeddings
+  if (scopeChainSlugs.length > 1 && embeddingsCount === 0) {
+    for (const slug of scopeChainSlugs) {
+      const count = await VectorDb.namespaceCount(slug);
+      if (count > 0) { embeddingsCount = count; break; }
+    }
+  }
 
   // User is trying to query-mode chat a workspace that has no data in it - so
   // we should exit early as no information can be found under these conditions.
@@ -89,8 +101,8 @@ async function streamChatWithForEmbed(
 
   const vectorSearchResults =
     embeddingsCount !== 0
-      ? await VectorDb.performSimilaritySearch({
-          namespace: embed.workspace.slug,
+      ? await VectorDb.performScopedSimilaritySearch({
+          namespaces: scopeChainSlugs,
           input: message,
           LLMConnector,
           similarityThreshold: embed.workspace?.similarityThreshold,

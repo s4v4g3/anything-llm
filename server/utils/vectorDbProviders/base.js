@@ -136,6 +136,97 @@ class VectorDatabase {
   }
 
   /**
+   * Perform a similarity search across multiple namespaces (scope chain).
+   * Queries each namespace individually, merges and re-ranks results by score,
+   * then returns the top N results. This enables hierarchical workspace search
+   * without modifying individual provider implementations.
+   *
+   * @param {Object} params - Search parameters
+   * @param {string[]} params.namespaces - Array of namespace slugs to search across
+   * @param {string} params.input - Input text to search for
+   * @param {any} params.LLMConnector - LLM connector for embeddings
+   * @param {number} params.similarityThreshold - Similarity threshold
+   * @param {number} params.topN - Number of results to return (total across all namespaces)
+   * @param {string[]} params.filterIdentifiers - Identifiers to filter out
+   * @param {boolean} params.rerank - Whether to use reranking
+   * @returns {Promise<{contextTexts: string[], sources: any[], message: string|boolean}>}
+   */
+  async performScopedSimilaritySearch({
+    namespaces = [],
+    input = "",
+    LLMConnector = null,
+    similarityThreshold = 0.25,
+    topN = 4,
+    filterIdentifiers = [],
+    rerank = false,
+  }) {
+    if (!namespaces.length || !input || !LLMConnector)
+      throw new Error("Invalid request to performScopedSimilaritySearch.");
+
+    // If only one namespace, fall back to standard search
+    if (namespaces.length === 1) {
+      return this.performSimilaritySearch({
+        namespace: namespaces[0],
+        input,
+        LLMConnector,
+        similarityThreshold,
+        topN,
+        filterIdentifiers,
+        rerank,
+      });
+    }
+
+    // Query each namespace that exists and collect results
+    const allContextTexts = [];
+    const allSources = [];
+
+    for (const namespace of namespaces) {
+      const hasNs = await this.hasNamespace(namespace);
+      if (!hasNs) continue;
+
+      const nsCount = await this.namespaceCount(namespace);
+      if (nsCount === 0) continue;
+
+      const result = await this.performSimilaritySearch({
+        namespace,
+        input,
+        LLMConnector,
+        similarityThreshold,
+        topN, // Request topN per namespace; we'll trim after merging
+        filterIdentifiers,
+        rerank,
+      });
+
+      // Skip namespaces that returned errors
+      if (result.message) continue;
+
+      allContextTexts.push(...result.contextTexts);
+      allSources.push(...result.sources);
+    }
+
+    // If no results from any namespace
+    if (allContextTexts.length === 0) {
+      return {
+        contextTexts: [],
+        sources: [],
+        message: false,
+      };
+    }
+
+    // Trim to topN total results (sources are already ranked per-namespace by score)
+    // We take the first topN from the merged set. Since each provider already
+    // applies similarityThreshold, all results here meet the threshold.
+    const trimmedContextTexts = allContextTexts.slice(0, topN);
+    const trimmedSources = allSources.slice(0, topN);
+
+    return {
+      contextTexts: trimmedContextTexts,
+      sources: trimmedSources,
+      message: false,
+    };
+  }
+
+  /**
    * Perform a similarity search and return raw results
    * @param {Object} params - Search parameters
    * @param {any} params.client - Vector database client

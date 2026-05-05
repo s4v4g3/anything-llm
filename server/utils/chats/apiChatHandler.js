@@ -220,9 +220,21 @@ async function chatSync({
     model: workspace?.chatModel,
   });
   const VectorDb = getVectorDbClass();
+  const { Workspace } = require("../../models/workspace");
   const messageLimit = workspace?.openAiHistory || 20;
+
+  // Determine the scope chain for vector search (self + ancestors + descendants based on settings)
+  const scopeChainSlugs = await Workspace.getScopeChainSlugs(workspace);
   const hasVectorizedSpace = await VectorDb.hasNamespace(workspace.slug);
-  const embeddingsCount = await VectorDb.namespaceCount(workspace.slug);
+  let embeddingsCount = await VectorDb.namespaceCount(workspace.slug);
+
+  // If scoped search is active, check if any namespace in the chain has embeddings
+  if (scopeChainSlugs.length > 1 && embeddingsCount === 0) {
+    for (const slug of scopeChainSlugs) {
+      const count = await VectorDb.namespaceCount(slug);
+      if (count > 0) { embeddingsCount = count; break; }
+    }
+  }
 
   // User is trying to query-mode chat a workspace that has no data in it - so
   // we should exit early as no information can be found under these conditions.
@@ -306,8 +318,8 @@ async function chatSync({
 
   const vectorSearchResults =
     embeddingsCount !== 0
-      ? await VectorDb.performSimilaritySearch({
-          namespace: workspace.slug,
+      ? await VectorDb.performScopedSimilaritySearch({
+          namespaces: scopeChainSlugs,
           input: message,
           LLMConnector,
           similarityThreshold: workspace?.similarityThreshold,
@@ -569,9 +581,21 @@ async function streamChat({
   });
 
   const VectorDb = getVectorDbClass();
+  const { Workspace: WorkspaceModel } = require("../../models/workspace");
   const messageLimit = workspace?.openAiHistory || 20;
+
+  // Determine the scope chain for vector search (self + ancestors + descendants based on settings)
+  const streamScopeChainSlugs = await WorkspaceModel.getScopeChainSlugs(workspace);
   const hasVectorizedSpace = await VectorDb.hasNamespace(workspace.slug);
-  const embeddingsCount = await VectorDb.namespaceCount(workspace.slug);
+  let embeddingsCount = await VectorDb.namespaceCount(workspace.slug);
+
+  // If scoped search is active, check if any namespace in the chain has embeddings
+  if (streamScopeChainSlugs.length > 1 && embeddingsCount === 0) {
+    for (const slug of streamScopeChainSlugs) {
+      const count = await VectorDb.namespaceCount(slug);
+      if (count > 0) { embeddingsCount = count; break; }
+    }
+  }
 
   // User is trying to query-mode chat a workspace that has no data in it - so
   // we should exit early as no information can be found under these conditions.
@@ -665,8 +689,8 @@ async function streamChat({
 
   const vectorSearchResults =
     embeddingsCount !== 0
-      ? await VectorDb.performSimilaritySearch({
-          namespace: workspace.slug,
+      ? await VectorDb.performScopedSimilaritySearch({
+          namespaces: streamScopeChainSlugs,
           input: message,
           LLMConnector,
           similarityThreshold: workspace?.similarityThreshold,
