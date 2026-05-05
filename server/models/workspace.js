@@ -56,6 +56,8 @@ const Workspace = {
     "agentModel",
     "queryRefusalResponse",
     "vectorSearchMode",
+    "includeChildDocs",
+    "includeAncestorDocs",
   ],
 
   validations: {
@@ -130,6 +132,14 @@ const Workspace = {
       )
         return "default";
       return value;
+    },
+    includeChildDocs: (value) => {
+      if (value === null || value === undefined) return true;
+      return Boolean(value);
+    },
+    includeAncestorDocs: (value) => {
+      if (value === null || value === undefined) return true;
+      return Boolean(value);
     },
   },
 
@@ -928,11 +938,15 @@ const Workspace = {
       const allIds = [workspaceId, ...descendants.map((d) => d.id)];
       const allSlugs = [workspace.slug, ...descendants.map((d) => d.slug)];
 
-      // Delete vectors from all namespaces
-      const { getVectorDbClass } = require("../utils/helpers");
-      const VectorDb = getVectorDbClass();
-      for (const slug of allSlugs) {
-        await VectorDb.deleteVectorsInNamespace(null, slug).catch(() => null);
+      // Delete vectors from all namespaces (best-effort)
+      try {
+        const { getVectorDbClass } = require("../utils/helpers");
+        const VectorDb = getVectorDbClass();
+        for (const slug of allSlugs) {
+          await VectorDb.deleteVectorsInNamespace(null, slug).catch(() => null);
+        }
+      } catch (_) {
+        // Vector cleanup is best-effort; don't block deletion
       }
 
       // Delete all workspaces in the subtree (cascades handle related records)

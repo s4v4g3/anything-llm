@@ -49,8 +49,10 @@ function workspaceEndpoints(app) {
     async (request, response) => {
       try {
         const user = await userFromSession(request, response);
-        const { name = null } = reqBody(request);
-        const { workspace, message } = await Workspace.new(name, user?.id);
+        const { name = null, parentWorkspaceId = null } = reqBody(request);
+        const { workspace, message } = await Workspace.new(name, user?.id, {
+          ...(parentWorkspaceId ? { parentWorkspaceId } : {}),
+        });
         await Telemetry.sendTelemetry(
           "workspace_created",
           {
