@@ -240,6 +240,74 @@ function workspaceHierarchyEndpoints(app) {
       }
     }
   );
+
+  // Get documents grouped by source workspace (own + inherited)
+  app.get(
+    "/workspace/:slug/inherited-documents",
+    [validatedRequest, flexUserRoleValid([ROLES.all]), validWorkspaceSlug],
+    async (request, response) => {
+      try {
+        const workspace = response.locals.workspace;
+        const prisma = require("../utils/prisma");
+
+        // Get own documents
+        const ownDocs = await prisma.workspace_documents.findMany({
+          where: { workspaceId: workspace.id },
+        });
+
+        // Get inherited documents from descendants (if includeChildDocs)
+        let childDocs = [];
+        if (workspace.includeChildDocs) {
+          const descendants = await Workspace.getDescendants(workspace.id);
+          if (descendants.length > 0) {
+            const descIds = descendants.map((d) => d.id);
+            const docs = await prisma.workspace_documents.findMany({
+              where: { workspaceId: { in: descIds } },
+            });
+            // Group by workspace and attach workspace info
+            const descMap = new Map(descendants.map((d) => [d.id, d]));
+            childDocs = docs.map((doc) => ({
+              ...doc,
+              sourceWorkspace: {
+                id: descMap.get(doc.workspaceId)?.id,
+                name: descMap.get(doc.workspaceId)?.name,
+                slug: descMap.get(doc.workspaceId)?.slug,
+              },
+            }));
+          }
+        }
+
+        // Get inherited documents from ancestors (if includeAncestorDocs)
+        let ancestorDocs = [];
+        if (workspace.includeAncestorDocs) {
+          const ancestors = await Workspace.getAncestors(workspace.id);
+          if (ancestors.length > 0) {
+            const ancIds = ancestors.map((a) => a.id);
+            const docs = await prisma.workspace_documents.findMany({
+              where: { workspaceId: { in: ancIds } },
+            });
+            const ancMap = new Map(ancestors.map((a) => [a.id, a]));
+            ancestorDocs = docs.map((doc) => ({
+              ...doc,
+              sourceWorkspace: {
+                id: ancMap.get(doc.workspaceId)?.id,
+                name: ancMap.get(doc.workspaceId)?.name,
+                slug: ancMap.get(doc.workspaceId)?.slug,
+              },
+            }));
+          }
+        }
+
+        response.status(200).json({
+          ownDocuments: ownDocs,
+          inheritedDocuments: [...childDocs, ...ancestorDocs],
+        });
+      } catch (e) {
+        console.error(e.message, e);
+        response.sendStatus(500).end();
+      }
+    }
+  );
 }
 
 module.exports = { workspaceHierarchyEndpoints };

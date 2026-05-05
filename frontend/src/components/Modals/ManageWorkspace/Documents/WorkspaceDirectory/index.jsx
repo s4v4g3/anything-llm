@@ -1,5 +1,6 @@
 import PreLoader from "@/components/Preloader";
 import WorkspaceFileRow from "./WorkspaceFileRow";
+import InheritedDocuments from "./InheritedDocuments";
 import { memo, useEffect, useState } from "react";
 import ModalWrapper from "@/components/ModalWrapper";
 import {
@@ -178,6 +179,11 @@ function WorkspaceDirectory({
           <h3 className="text-white text-base font-bold ml-5">
             {workspace.name}
           </h3>
+          {workspace.parentWorkspaceId && workspace.path && (
+            <span className="text-theme-text-secondary text-xs ml-2 mt-0.5">
+              {workspace.path}
+            </span>
+          )}
         </div>
         <div className="relative w-[560px] h-[445px] mt-5">
           <div
@@ -295,6 +301,7 @@ function WorkspaceDirectory({
             </button>
           </div>
         )}
+        <InheritedDocuments workspace={workspace} />
       </div>
       <PinAlert />
       <DocumentWatchAlert />

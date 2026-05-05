@@ -332,6 +332,21 @@ const Workspace = {
       .then((res) => res.json())
       .catch((e) => ({ success: false, error: e.message }));
   },
+
+  /**
+   * Get documents for a workspace grouped by own vs inherited
+   * @param {string} slug
+   * @returns {Promise<{ownDocuments: Array, inheritedDocuments: Array}>}
+   */
+  getInheritedDocuments: async function (slug) {
+    return await fetch(`${API_BASE}/workspace/${slug}/inherited-documents`, {
+      method: "GET",
+      headers: baseHeaders(),
+    })
+      .then((res) => res.json())
+      .catch(() => ({ ownDocuments: [], inheritedDocuments: [] }));
+  },
+
   wipeVectorDb: async function (slug) {
     return await fetch(`${API_BASE}/workspace/${slug}/reset-vector-db`, {
       method: "DELETE",
