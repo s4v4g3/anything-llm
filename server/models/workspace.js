@@ -195,6 +195,25 @@ const Workspace = {
       slug = this.slugify(`${name}-${slugSeed}`, { lower: true });
     }
 
+    // Compute hierarchy fields if parentWorkspaceId is provided
+    const parentWorkspaceId = additionalFields.parentWorkspaceId || null;
+    let path, depth;
+    if (parentWorkspaceId) {
+      const parent = await prisma.workspaces.findUnique({
+        where: { id: parentWorkspaceId },
+        select: { path: true, depth: true },
+      });
+      if (!parent)
+        return { workspace: null, message: "Parent workspace not found" };
+      path = `${parent.path}/${slug}`;
+      depth = parent.depth + 1;
+    } else {
+      path = `/${slug}`;
+      depth = 0;
+    }
+    // Remove parentWorkspaceId from additionalFields so it doesn't go through validateFields
+    delete additionalFields.parentWorkspaceId;
+
     // Get the default system prompt
     const defaultSystemPrompt = await SystemSettings.get({
       label: "default_system_prompt",
@@ -210,6 +229,9 @@ const Workspace = {
           chatMode: "automatic",
           ...this.validateFields(additionalFields),
           slug,
+          parentWorkspaceId,
+          path,
+          depth,
         },
       });
 
@@ -674,6 +696,373 @@ const Workspace = {
     if (workspace.chatMode !== "automatic") return true;
     const nativeToolCalling = await this.supportsNativeToolCalling(workspace);
     return nativeToolCalling === false;
+  },
+
+  // ============================================
+  // Workspace Hierarchy / Sub-Workspace Methods
+  // ============================================
+
+  /**
+   * Fields that are inheritable from parent workspaces to children.
+   * When a child workspace has a null value for one of these fields,
+   * it inherits the value from its nearest ancestor that has it set.
+   */
+  inheritableFields: [
+    "chatProvider",
+    "chatModel",
+    "openAiTemp",
+    "openAiHistory",
+    "openAiPrompt",
+    "similarityThreshold",
+    "topN",
+    "chatMode",
+    "agentProvider",
+    "agentModel",
+    "queryRefusalResponse",
+    "vectorSearchMode",
+  ],
+
+  /**
+   * Get the direct children of a workspace.
+   * @param {number} workspaceId - The parent workspace ID.
+   * @returns {Promise<Array>} Array of child workspace objects.
+   */
+  getChildren: async function (workspaceId) {
+    try {
+      return await prisma.workspaces.findMany({
+        where: { parentWorkspaceId: workspaceId },
+        orderBy: { name: "asc" },
+      });
+    } catch (error) {
+      console.error(error.message);
+      return [];
+    }
+  },
+
+  /**
+   * Get all descendants of a workspace using the materialized path.
+   * @param {number} workspaceId - The workspace ID.
+   * @returns {Promise<Array>} Array of descendant workspace objects, ordered by path.
+   */
+  getDescendants: async function (workspaceId) {
+    try {
+      const workspace = await prisma.workspaces.findUnique({
+        where: { id: workspaceId },
+        select: { path: true },
+      });
+      if (!workspace) return [];
+
+      return await prisma.workspaces.findMany({
+        where: {
+          path: { startsWith: `${workspace.path}/` },
+        },
+        orderBy: { path: "asc" },
+      });
+    } catch (error) {
+      console.error(error.message);
+      return [];
+    }
+  },
+
+  /**
+   * Get the ancestor chain for a workspace (from root down to parent).
+   * Computed from the materialized path — no recursive queries needed.
+   * @param {number} workspaceId - The workspace ID.
+   * @returns {Promise<Array>} Ordered array from root ancestor to direct parent.
+   */
+  getAncestors: async function (workspaceId) {
+    try {
+      const workspace = await prisma.workspaces.findUnique({
+        where: { id: workspaceId },
+        select: { path: true },
+      });
+      if (!workspace) return [];
+
+      const segments = workspace.path.split("/").filter(Boolean);
+      if (segments.length <= 1) return []; // root workspace has no ancestors
+
+      const ancestorPaths = [];
+      for (let i = 1; i < segments.length; i++) {
+        ancestorPaths.push("/" + segments.slice(0, i).join("/"));
+      }
+
+      return await prisma.workspaces.findMany({
+        where: { path: { in: ancestorPaths } },
+        orderBy: { depth: "asc" },
+      });
+    } catch (error) {
+      console.error(error.message);
+      return [];
+    }
+  },
+
+  /**
+   * Get a workspace tree structure. If rootId is provided, returns subtree.
+   * Otherwise returns the full tree of all workspaces.
+   * @param {number|null} rootId - Optional root workspace ID for subtree.
+   * @returns {Promise<Array>} Nested tree structure with `children` arrays.
+   */
+  getTree: async function (rootId = null) {
+    try {
+      let workspaces;
+      if (rootId) {
+        const root = await prisma.workspaces.findUnique({
+          where: { id: rootId },
+        });
+        if (!root) return [];
+        workspaces = await prisma.workspaces.findMany({
+          where: {
+            OR: [
+              { id: rootId },
+              { path: { startsWith: `${root.path}/` } },
+            ],
+          },
+          orderBy: { path: "asc" },
+        });
+      } else {
+        workspaces = await prisma.workspaces.findMany({
+          orderBy: { path: "asc" },
+        });
+      }
+
+      return this._buildTreeFromFlatList(workspaces);
+    } catch (error) {
+      console.error(error.message);
+      return [];
+    }
+  },
+
+  /**
+   * Move a workspace to a new parent (or to root if newParentId is null).
+   * Updates the materialized path for the workspace and all its descendants.
+   * @param {number} workspaceId - The workspace to move.
+   * @param {number|null} newParentId - The new parent workspace ID, or null for root.
+   * @returns {Promise<{success: boolean, error: string|null}>}
+   */
+  move: async function (workspaceId, newParentId = null) {
+    try {
+      const workspace = await prisma.workspaces.findUnique({
+        where: { id: workspaceId },
+      });
+      if (!workspace) return { success: false, error: "Workspace not found" };
+
+      // Prevent moving to self
+      if (newParentId === workspaceId)
+        return { success: false, error: "Cannot move workspace into itself" };
+
+      let newPath, newDepth;
+      if (newParentId) {
+        const newParent = await prisma.workspaces.findUnique({
+          where: { id: newParentId },
+        });
+        if (!newParent)
+          return { success: false, error: "New parent workspace not found" };
+
+        // Prevent circular reference: new parent cannot be a descendant
+        if (newParent.path.startsWith(`${workspace.path}/`))
+          return {
+            success: false,
+            error: "Cannot move workspace into its own descendant",
+          };
+
+        newPath = `${newParent.path}/${workspace.slug}`;
+        newDepth = newParent.depth + 1;
+      } else {
+        newPath = `/${workspace.slug}`;
+        newDepth = 0;
+      }
+
+      const oldPath = workspace.path;
+      const depthDelta = newDepth - workspace.depth;
+
+      // Update this workspace
+      await prisma.workspaces.update({
+        where: { id: workspaceId },
+        data: {
+          parentWorkspaceId: newParentId,
+          path: newPath,
+          depth: newDepth,
+        },
+      });
+
+      // Update all descendants: replace path prefix and adjust depth
+      const descendants = await prisma.workspaces.findMany({
+        where: { path: { startsWith: `${oldPath}/` } },
+      });
+
+      for (const desc of descendants) {
+        const updatedPath = newPath + desc.path.slice(oldPath.length);
+        await prisma.workspaces.update({
+          where: { id: desc.id },
+          data: { path: updatedPath, depth: desc.depth + depthDelta },
+        });
+      }
+
+      return { success: true, error: null };
+    } catch (error) {
+      console.error(error.message);
+      return { success: false, error: error.message };
+    }
+  },
+
+  /**
+   * Delete a workspace and its entire subtree (all descendants).
+   * Removes vector data for all workspaces in the subtree.
+   * @param {number} workspaceId - The workspace to delete.
+   * @returns {Promise<{success: boolean, error: string|null}>}
+   */
+  deleteWithSubtree: async function (workspaceId) {
+    try {
+      const workspace = await prisma.workspaces.findUnique({
+        where: { id: workspaceId },
+      });
+      if (!workspace)
+        return { success: false, error: "Workspace not found" };
+
+      // Get all descendants
+      const descendants = await prisma.workspaces.findMany({
+        where: { path: { startsWith: `${workspace.path}/` } },
+        select: { id: true, slug: true },
+      });
+
+      const allIds = [workspaceId, ...descendants.map((d) => d.id)];
+      const allSlugs = [workspace.slug, ...descendants.map((d) => d.slug)];
+
+      // Delete vectors from all namespaces
+      const { getVectorDbClass } = require("../utils/helpers");
+      const VectorDb = getVectorDbClass();
+      for (const slug of allSlugs) {
+        await VectorDb.deleteVectorsInNamespace(null, slug).catch(() => null);
+      }
+
+      // Delete all workspaces in the subtree (cascades handle related records)
+      await prisma.workspaces.deleteMany({
+        where: { id: { in: allIds } },
+      });
+
+      return { success: true, error: null };
+    } catch (error) {
+      console.error(error.message);
+      return { success: false, error: error.message };
+    }
+  },
+
+  /**
+   * Delete a workspace but promote its children to the grandparent (or root).
+   * @param {number} workspaceId - The workspace to delete.
+   * @returns {Promise<{success: boolean, error: string|null}>}
+   */
+  deleteAndPromoteChildren: async function (workspaceId) {
+    try {
+      const workspace = await prisma.workspaces.findUnique({
+        where: { id: workspaceId },
+      });
+      if (!workspace)
+        return { success: false, error: "Workspace not found" };
+
+      // Move all direct children to this workspace's parent
+      const children = await this.getChildren(workspaceId);
+      for (const child of children) {
+        await this.move(child.id, workspace.parentWorkspaceId);
+      }
+
+      // Now delete just this workspace (no children left)
+      await this.delete({ id: workspaceId });
+      return { success: true, error: null };
+    } catch (error) {
+      console.error(error.message);
+      return { success: false, error: error.message };
+    }
+  },
+
+  /**
+   * Get the effective settings for a workspace, inheriting from ancestors.
+   * Settings are merged from root down — the closest ancestor's non-null value wins.
+   * The workspace's own non-null values always take final precedence.
+   * @param {number} workspaceId - The workspace ID.
+   * @returns {Promise<Object>} Merged settings object with effective values.
+   */
+  getEffectiveSettings: async function (workspaceId) {
+    try {
+      const workspace = await prisma.workspaces.findUnique({
+        where: { id: workspaceId },
+      });
+      if (!workspace) return {};
+
+      // If this is a root workspace, just return its own settings
+      if (!workspace.parentWorkspaceId) return workspace;
+
+      const ancestors = await this.getAncestors(workspaceId);
+      const chain = [...ancestors, workspace];
+
+      // Build effective settings by overlaying from root to leaf
+      const effectiveSettings = { ...workspace }; // Start with all workspace fields
+      for (const field of this.inheritableFields) {
+        // Walk the chain from root to this workspace; last non-null value wins
+        let effectiveValue = null;
+        for (const ws of chain) {
+          if (ws[field] !== null && ws[field] !== undefined) {
+            effectiveValue = ws[field];
+          }
+        }
+        effectiveSettings[field] = effectiveValue;
+      }
+
+      return effectiveSettings;
+    } catch (error) {
+      console.error(error.message);
+      return {};
+    }
+  },
+
+  /**
+   * Get all workspace slugs in the scope chain for RAG queries.
+   * Based on workspace settings: includes ancestors (upward) and/or descendants (downward).
+   * @param {Object} workspace - The workspace object (must include id, slug, includeChildDocs, includeAncestorDocs).
+   * @returns {Promise<string[]>} Array of workspace slugs to search across.
+   */
+  getScopeChainSlugs: async function (workspace) {
+    const slugs = [workspace.slug];
+
+    if (workspace.includeChildDocs) {
+      const descendants = await this.getDescendants(workspace.id);
+      slugs.push(...descendants.map((d) => d.slug));
+    }
+
+    if (workspace.includeAncestorDocs) {
+      const ancestors = await this.getAncestors(workspace.id);
+      slugs.push(...ancestors.map((a) => a.slug));
+    }
+
+    return slugs;
+  },
+
+  /**
+   * Build a nested tree structure from a flat list of workspaces.
+   * @param {Array} workspaces - Flat array of workspace objects.
+   * @returns {Array} Nested array with `children` property on each node.
+   * @private
+   */
+  _buildTreeFromFlatList: function (workspaces) {
+    const map = new Map();
+    const roots = [];
+
+    // First pass: create nodes with children arrays
+    for (const ws of workspaces) {
+      map.set(ws.id, { ...ws, children: [] });
+    }
+
+    // Second pass: link parent-child relationships
+    for (const ws of workspaces) {
+      const node = map.get(ws.id);
+      if (ws.parentWorkspaceId && map.has(ws.parentWorkspaceId)) {
+        map.get(ws.parentWorkspaceId).children.push(node);
+      } else {
+        roots.push(node);
+      }
+    }
+
+    return roots;
   },
 };
 

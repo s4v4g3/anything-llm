@@ -138,6 +138,15 @@ model workspaces {
   agentModel                   String?
   queryRefusalResponse         String?
   vectorSearchMode             String?                        @default("default")
+  // Hierarchy fields for nested sub-workspaces
+  parentWorkspaceId            Int?
+  path                         String                         @default("/")
+  depth                        Int                            @default(0)
+  includeChildDocs             Boolean                        @default(true)
+  includeAncestorDocs          Boolean                        @default(true)
+  // Self-referential relation for workspace hierarchy
+  parentWorkspace              workspaces?                    @relation("WorkspaceHierarchy", fields: [parentWorkspaceId], references: [id], onDelete: SetNull)
+  childWorkspaces              workspaces[]                   @relation("WorkspaceHierarchy")
   workspace_users              workspace_users[]
   documents                    workspace_documents[]
   workspace_suggested_messages workspace_suggested_messages[]
@@ -146,6 +155,9 @@ model workspaces {
   workspace_agent_invocations  workspace_agent_invocations[]
   prompt_history               prompt_history[]
   workspace_parsed_files       workspace_parsed_files[]
+
+  @@index([parentWorkspaceId])
+  @@index([path])
 }
 
 model workspace_threads {

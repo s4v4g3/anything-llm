@@ -36,6 +36,35 @@ const Document = {
     });
   },
 
+  /**
+   * Get documents for a workspace and all workspaces in its scope chain.
+   * Uses the Workspace model to determine which ancestor/descendant workspaces
+   * are included based on the workspace's includeChildDocs/includeAncestorDocs settings.
+   * @param {Object} workspace - The workspace object (must include id, slug, includeChildDocs, includeAncestorDocs).
+   * @returns {Promise<Array>} Array of documents across the scoped workspaces.
+   */
+  forWorkspaceTree: async function (workspace) {
+    if (!workspace) return [];
+    const { Workspace } = require("./workspace");
+
+    // Gather all workspace IDs in the scope chain
+    const workspaceIds = [workspace.id];
+
+    if (workspace.includeChildDocs) {
+      const descendants = await Workspace.getDescendants(workspace.id);
+      workspaceIds.push(...descendants.map((d) => d.id));
+    }
+
+    if (workspace.includeAncestorDocs) {
+      const ancestors = await Workspace.getAncestors(workspace.id);
+      workspaceIds.push(...ancestors.map((a) => a.id));
+    }
+
+    return await prisma.workspace_documents.findMany({
+      where: { workspaceId: { in: workspaceIds } },
+    });
+  },
+
   delete: async function (clause = {}) {
     try {
       await prisma.workspace_documents.deleteMany({ where: clause });
