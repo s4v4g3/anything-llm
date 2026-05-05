@@ -51,7 +51,7 @@ export default function TextSizeMenu() {
   if (isMobile) return null;
   return (
     <div
-      className={`absolute top-3 md:top-5 z-30 ${hasUserIcon ? "right-[55px] md:right-[67px]" : "right-4 md:right-6"}`}
+      className={`absolute top-5 md:top-8 z-30 ${hasUserIcon ? "left+[55px] md:left+[67px]" : "left+4 md:left+6"}`}
     >
       <button
         ref={buttonRef}

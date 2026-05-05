@@ -32,9 +32,8 @@ import paths from "@/utils/paths";
 import QuickActions from "@/components/lib/QuickActions";
 import SuggestedMessages from "@/components/lib/SuggestedMessages";
 import TextSizeMenu from "./TextSizeMenu";
-import WorkspaceModelPicker from "./WorkspaceModelPicker";
 import SourcesSidebar, { SourcesSidebarProvider } from "./SourcesSidebar";
-import WorkspaceBreadcrumbs from "./WorkspaceBreadcrumbs";
+import ChatHeader from "./ChatHeader";
 
 export default function ChatContainer({
   workspace,
@@ -384,9 +383,8 @@ export default function ChatContainer({
         className="transition-all duration-500 relative md:ml-[2px] md:mr-[16px] md:my-[16px] md:rounded-[16px] bg-zinc-900 light:bg-white w-full h-full overflow-hidden border-none light:border-solid light:border light:border-theme-modal-border"
       >
         {isMobile && <SidebarMobileHeader />}
-        <WorkspaceBreadcrumbs workspace={workspace} />
+        <ChatHeader workspace={workspace} />
         <TextSizeMenu />
-        <WorkspaceModelPicker workspaceSlug={workspace.slug} />
         <DnDFileUploaderWrapper>
           <div className="flex flex-col h-full w-full items-center justify-center">
             <div className="flex flex-col items-center w-full max-w-[750px]">
@@ -432,12 +430,11 @@ export default function ChatContainer({
         className="relative flex md:ml-[2px] md:mr-[16px] md:my-[16px] w-full h-full z-[2]"
       >
         <TextSizeMenu />
-        <div className="flex-1 min-w-0 transition-all duration-500 relative md:rounded-[16px] bg-zinc-900 light:bg-white text-white light:text-slate-900 h-full overflow-hidden border-none light:border-solid light:border light:border-theme-modal-border">
+        <div className="flex-1 min-w-0 transition-all duration-500 relative md:rounded-[16px] bg-zinc-900 light:bg-white text-white light:text-slate-900 h-full overflow-hidden border-none light:border-solid light:border light:border-theme-modal-border flex flex-col">
           {isMobile && <SidebarMobileHeader />}
-          <WorkspaceModelPicker workspaceSlug={workspace.slug} />
-          <WorkspaceBreadcrumbs workspace={workspace} />
+          <ChatHeader workspace={workspace} />
           <DnDFileUploaderWrapper>
-            <div className="flex flex-col h-full w-full pb-20 md:pb-0">
+            <div className="flex flex-col flex-1 min-h-0 w-full pb-20 md:pb-0">
               <div className="contents">
                 <MetricsProvider>
                   <ChatHistory

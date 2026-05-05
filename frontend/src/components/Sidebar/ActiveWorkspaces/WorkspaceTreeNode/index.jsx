@@ -68,7 +68,7 @@ export default function WorkspaceTreeNode({
         {/* Curved connector line from parent (only for child workspaces) */}
         {isChild && (
           <div
-            style={{ width: CONNECTOR_WIDTH / 2, left: `${indentPx - 9}px` }}
+            style={{ width: CONNECTOR_WIDTH / 2, left: `${indentPx - 7}px` }}
             className={`${
               isActive
                 ? "border-l-2 border-b-2 border-white light:border-blue-800 z-[2]"
@@ -79,7 +79,7 @@ export default function WorkspaceTreeNode({
         {/* Downstroke continuation line for next sibling */}
         {isChild && hasNext && (
           <div
-            style={{ width: CONNECTOR_WIDTH / 2, left: `${indentPx - 9}px` }}
+            style={{ width: CONNECTOR_WIDTH / 2, left: `${indentPx - 7}px` }}
             className={`${
               isActive
                 ? "border-l-2 border-white light:border-blue-800 z-[2]"
