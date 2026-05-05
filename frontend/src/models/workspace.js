@@ -237,6 +237,101 @@ const Workspace = {
 
     return result;
   },
+
+  // --- Hierarchy methods ---
+  /**
+   * Get the full workspace tree (nested structure with children arrays)
+   * @returns {Promise<Array>} Nested tree of workspaces
+   */
+  getTree: async function () {
+    return await fetch(`${API_BASE}/workspaces/tree`, {
+      method: "GET",
+      headers: baseHeaders(),
+    })
+      .then((res) => res.json())
+      .then((res) => res.tree || [])
+      .catch(() => []);
+  },
+
+  /**
+   * Get direct children of a workspace
+   * @param {string} slug
+   * @returns {Promise<Array>}
+   */
+  getChildren: async function (slug) {
+    return await fetch(`${API_BASE}/workspace/${slug}/children`, {
+      method: "GET",
+      headers: baseHeaders(),
+    })
+      .then((res) => res.json())
+      .then((res) => res.children || [])
+      .catch(() => []);
+  },
+
+  /**
+   * Get breadcrumbs (ancestor chain + self) for a workspace
+   * @param {string} slug
+   * @returns {Promise<Array>}
+   */
+  getBreadcrumbs: async function (slug) {
+    return await fetch(`${API_BASE}/workspace/${slug}/breadcrumbs`, {
+      method: "GET",
+      headers: baseHeaders(),
+    })
+      .then((res) => res.json())
+      .then((res) => res.breadcrumbs || [])
+      .catch(() => []);
+  },
+
+  /**
+   * Create a sub-workspace under a parent workspace
+   * @param {string} parentSlug - The parent workspace slug
+   * @param {Object} data - Must contain at least { name }
+   * @returns {Promise<{workspace: Object|null, message: string|null}>}
+   */
+  newSubWorkspace: async function (parentSlug, data = {}) {
+    return await fetch(`${API_BASE}/workspace/${parentSlug}/sub-workspace`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: baseHeaders(),
+    })
+      .then((res) => res.json())
+      .catch((e) => ({ workspace: null, message: e.message }));
+  },
+
+  /**
+   * Move (reparent) a workspace
+   * @param {string} slug - The workspace to move
+   * @param {number|null} parentWorkspaceId - New parent ID, or null for root
+   * @returns {Promise<{success: boolean, error: string|null}>}
+   */
+  moveWorkspace: async function (slug, parentWorkspaceId) {
+    return await fetch(`${API_BASE}/workspace/${slug}/move`, {
+      method: "PUT",
+      body: JSON.stringify({ parentWorkspaceId }),
+      headers: baseHeaders(),
+    })
+      .then((res) => res.json())
+      .catch((e) => ({ success: false, error: e.message }));
+  },
+
+  /**
+   * Delete a workspace with strategy for handling children
+   * @param {string} slug
+   * @param {string} strategy - "promote" (default) or "delete"
+   * @returns {Promise<{success: boolean, error: string|null}>}
+   */
+  deleteWithChildren: async function (slug, strategy = "promote") {
+    return await fetch(
+      `${API_BASE}/workspace/${slug}/with-children?strategy=${strategy}`,
+      {
+        method: "DELETE",
+        headers: baseHeaders(),
+      }
+    )
+      .then((res) => res.json())
+      .catch((e) => ({ success: false, error: e.message }));
+  },
   wipeVectorDb: async function (slug) {
     return await fetch(`${API_BASE}/workspace/${slug}/reset-vector-db`, {
       method: "DELETE",

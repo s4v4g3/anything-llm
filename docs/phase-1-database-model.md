@@ -63,7 +63,7 @@ UPDATE workspaces SET path = '/' || slug, depth = 0 WHERE path = '/';
 new: async function (name, creatorId, parentWorkspaceId = null) {
   const slug = slugify(name, { lower: true, strict: true });
   // Handle slug collisions (existing logic)
-  
+
   let path, depth;
   if (parentWorkspaceId) {
     const parent = await prisma.workspaces.findUnique({
@@ -104,7 +104,7 @@ getDescendants: async function (workspaceId) {
     select: { path: true }
   });
   if (!workspace) return [];
-  
+
   // Materialized path query: find all workspaces whose path starts with this one
   return await prisma.workspaces.findMany({
     where: {
@@ -124,16 +124,16 @@ getAncestors: async function (workspaceId) {
     select: { path: true }
   });
   if (!workspace) return [];
-  
+
   // Build all ancestor paths from materialized path
   const segments = workspace.path.split('/').filter(Boolean);
   const ancestorPaths = [];
   for (let i = 1; i < segments.length; i++) {
     ancestorPaths.push('/' + segments.slice(0, i).join('/'));
   }
-  
+
   if (ancestorPaths.length === 0) return [];
-  
+
   return await prisma.workspaces.findMany({
     where: { path: { in: ancestorPaths } },
     orderBy: { depth: 'asc' }
@@ -163,7 +163,7 @@ getTree: async function (rootId = null) {
       include: { documents: { select: { id: true } } }
     });
   }
-  
+
   return buildTreeFromFlatList(workspaces);
 }
 ```
@@ -172,7 +172,7 @@ getTree: async function (rootId = null) {
 ```javascript
 move: async function (workspaceId, newParentId) {
   const workspace = await prisma.workspaces.findUnique({ where: { id: workspaceId } });
-  const newParent = newParentId 
+  const newParent = newParentId
     ? await prisma.workspaces.findUnique({ where: { id: newParentId } })
     : null;
 
@@ -211,21 +211,21 @@ move: async function (workspaceId, newParentId) {
 ```javascript
 deleteWithSubtree: async function (workspaceId) {
   const workspace = await prisma.workspaces.findUnique({ where: { id: workspaceId } });
-  
+
   // Get all descendant IDs
   const descendants = await prisma.workspaces.findMany({
     where: { path: { startsWith: `${workspace.path}/` } },
     select: { id: true, slug: true }
   });
-  
+
   const allIds = [workspaceId, ...descendants.map(d => d.id)];
   const allSlugs = [workspace.slug, ...descendants.map(d => d.slug)];
-  
+
   // Delete vectors from all namespaces
   for (const slug of allSlugs) {
     await VectorDb.deleteVectorsInNamespace(slug);
   }
-  
+
   // Cascade delete (Prisma handles related records)
   await prisma.workspaces.deleteMany({
     where: { id: { in: allIds } }
@@ -239,11 +239,11 @@ deleteWithSubtree: async function (workspaceId) {
 promoteChildren: async function (workspaceId) {
   const workspace = await prisma.workspaces.findUnique({ where: { id: workspaceId } });
   const children = await this.getChildren(workspaceId);
-  
+
   for (const child of children) {
     await this.move(child.id, workspace.parentWorkspaceId); // Move to grandparent (or root)
   }
-  
+
   // Now safe to delete just this workspace
   await this.delete(workspaceId);
 }
@@ -285,17 +285,17 @@ function buildTreeFromFlatList(workspaces) {
 getEffectiveSettings: async function (workspaceId) {
   const ancestors = await this.getAncestors(workspaceId);
   const workspace = await prisma.workspaces.findUnique({ where: { id: workspaceId } });
-  
+
   // Start with system defaults, overlay each ancestor's settings, then this workspace
   const chain = [...ancestors, workspace];
   const effectiveSettings = {};
-  
+
   const inheritableFields = [
     'chatProvider', 'chatModel', 'openAiTemp', 'openAiHistory',
     'openAiPrompt', 'similarityThreshold', 'topN', 'chatMode',
     'agentProvider', 'agentModel', 'queryRefusalResponse', 'vectorSearchMode'
   ];
-  
+
   for (const ws of chain) {
     for (const field of inheritableFields) {
       if (ws[field] !== null && ws[field] !== undefined) {
@@ -303,7 +303,7 @@ getEffectiveSettings: async function (workspaceId) {
       }
     }
   }
-  
+
   return effectiveSettings;
 }
 ```
