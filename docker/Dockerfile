@@ -5,6 +5,10 @@ FROM ubuntu:noble-20251013 AS base
 ARG ARG_UID=1000
 ARG ARG_GID=1000
 
+COPY docker/silabs.pem /usr/local/share/ca-certificates/silabs.pem
+ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/silabs.pem
+RUN echo insecure >> ~/.curlrc
+
 FROM base AS build-arm64
 RUN echo "Preparing build of AnythingLLM image for arm64 architecture"
 
@@ -55,6 +59,7 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh && \
     chmod +x /usr/local/bin/docker-healthcheck.sh
 
 USER anythingllm
+RUN echo insecure > ~/.curlrc
 WORKDIR /app
 
 # Puppeteer does not ship with an ARM86 compatible build for Chromium
@@ -132,6 +137,7 @@ FROM build-${TARGETARCH} AS build
 RUN echo "Running common build flow of AnythingLLM image for all architectures"
 
 USER anythingllm
+RUN echo insecure > ~/.curlrc
 WORKDIR /app
 
 # Install & Build frontend layer
@@ -141,6 +147,7 @@ WORKDIR /app
 FROM --platform=$BUILDPLATFORM node:18-slim AS frontend-build
 WORKDIR /app/frontend
 COPY ./frontend/package.json ./frontend/yarn.lock ./
+RUN yarn config set strict-ssl false
 RUN yarn install --network-timeout 100000 && yarn cache clean
 COPY ./frontend/ ./
 RUN yarn build
