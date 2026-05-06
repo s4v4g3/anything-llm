@@ -75,7 +75,7 @@ async function streamChatWithWorkspace(
 
   // User is trying to query-mode chat a workspace that has no data in it - so
   // we should exit early as no information can be found under these conditions.
-  if ((!hasVectorizedSpace || embeddingsCount === 0) && chatMode === "query") {
+  if (!hasVectorizedSpace && embeddingsCount === 0 && chatMode === "query") {
     const textResponse =
       workspace?.queryRefusalResponse ??
       "There is no relevant information in this workspace to answer your query.";

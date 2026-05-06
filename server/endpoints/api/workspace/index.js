@@ -30,6 +30,7 @@ function apiWorkspaceEndpoints(app) {
         "application/json": {
           example: {
             name: "My New Workspace",
+            parentWorkspaceId: null,
             similarityThreshold: 0.7,
             openAiTemp: 0.7,
             openAiHistory: 20,

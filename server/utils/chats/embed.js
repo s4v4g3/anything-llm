@@ -55,7 +55,7 @@ async function streamChatWithForEmbed(
 
   // User is trying to query-mode chat a workspace that has no data in it - so
   // we should exit early as no information can be found under these conditions.
-  if ((!hasVectorizedSpace || embeddingsCount === 0) && chatMode === "query") {
+  if (!hasVectorizedSpace && embeddingsCount === 0 && chatMode === "query") {
     writeResponseChunk(response, {
       id: uuid,
       type: "textResponse",
