@@ -168,6 +168,16 @@ const Workspace = {
     return slugifyModule(...args);
   },
 
+  createSlug: function (length = 7) {
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  },
+
   /**
    * Validate the fields for a workspace update.
    * @param {Object} updates - The updates to validate - should be writable fields
@@ -202,12 +212,13 @@ const Workspace = {
 
     // Update to use uuid for the slug to guarantee uniqueness
     // since it's not used for anything other than an identifier.
-    let slug = uuidv4();
-
-    const existingBySlug = await this.get({ slug });
-    if (existingBySlug !== null) {
-      const slugSeed = Math.floor(10000000 + Math.random() * 90000000);
-      slug = this.slugify(`${name}-${slugSeed}`, { lower: true });
+    let slug;
+    while (true) {
+      slug = this.createSlug();
+      const existingBySlug = await this.get({ slug });
+      if (!existingBySlug) {
+        break;
+      }
     }
 
     // Compute hierarchy fields if parentWorkspaceId is provided
