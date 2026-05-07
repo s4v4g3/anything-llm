@@ -21,9 +21,319 @@ const doc = {
     },
   },
   security: [{ BearerAuth: [] }],
-  definitions: {
-    InvalidAPIKey: {
-      message: "Invalid API Key",
+  components: {
+    "@schemas": {
+      InvalidAPIKey: {
+        type: "object",
+        properties: {
+          message: {
+            type: "string",
+            example: "Invalid API Key",
+          },
+        },
+      },
+      Workspace: {
+        type: "object",
+        properties: {
+          id: {
+            type: "integer",
+            example: 1,
+          },
+          name: {
+            type: "string",
+            example: "string",
+          },
+          slug: {
+            type: "string",
+            example: "string",
+          },
+          vectorTag: {
+            type: "string",
+            example: "string",
+            nullable: true,
+          },
+          createdAt: {
+            type: "string",
+            example: "2024-01-01T00:00:00.000Z",
+          },
+          openAiTemp: {
+            type: "number",
+            nullable: true,
+            example: 0.7,
+          },
+          openAiHistory: {
+            type: "number",
+            example: 0,
+          },
+          lastUpdatedAt: {
+            type: "string",
+            example: "2024-01-01T00:00:00.000Z",
+          },
+          openAiPrompt: {
+            type: "string",
+            example: "string",
+          },
+          similarityThreshold: {
+            type: "number",
+            nullable: true,
+            example: 0.7,
+          },
+          chatProvider: {
+            type: "string",
+            nullable: true,
+          },
+          chatModel: {
+            type: "string",
+            nullable: true,
+          },
+          topN: {
+            type: "number",
+            nullable: true,
+          },
+          chatMode: {
+            type: "string",
+            enum: ["chat", "query", "automatic"],
+            nullable: true,
+          },
+          pfpFilename: {
+            type: "string",
+            nullable: true,
+          },
+          agentProvider: {
+            type: "string",
+            nullable: true,
+          },
+          agentModel: {
+            type: "string",
+            nullable: true,
+            example: "gpt-4",
+          },
+          queryRefusalResponse: {
+            type: "string",
+            nullable: true,
+            example: "string",
+          },
+          vectorSearchMode: {
+            type: "string",
+            enum: ["default", "rerank"],
+          },
+          parentWorkspaceId: {
+            type: "integer",
+            example: 1,
+            nullable: true,
+          },
+          path: {
+            type: "string",
+          },
+          depth: {
+            type: "number",
+          },
+          includeChildDocs: {
+            type: "boolean",
+            example: false,
+          },
+          includeAncestorDocs: {
+            type: "boolean",
+            example: false,
+          },
+        },
+        required: ["id", "name", "slug", "createdAt", "lastUpdatedAt"],
+      },
+      CreateWorkspaceResponse: {
+        type: "object",
+        properties: {
+          message: {
+            type: "string",
+            example: "Workspace created successfully",
+          },
+          workspace: { $ref: "#/components/schemas/Workspace" },
+        },
+        required: ["workspace"],
+      },
+      UpdateWorkspaceResponse: {
+        type: "object",
+        properties: {
+          message: {
+            type: "string",
+            nullable: true,
+            example: "Workspace updated successfully",
+          },
+          workspace: { $ref: "#/components/schemas/Workspace" },
+        },
+        required: ["workspace"],
+      },
+      ListWorkspacesResponse: {
+        type: "object",
+        properties: {
+          workspaces: {
+            type: "array",
+            items: { $ref: "#/components/schemas/Workspace" },
+          },
+        },
+      },
+      GetWorkspaceResponse: {
+        type: "object",
+        properties: {
+          workspace: {
+            type: "array",
+            items: { $ref: "#/components/schemas/Workspace" },
+          },
+        },
+        required: ["workspace"],
+      },
+      GetWorkspaceChatsResponse: {
+        type: "object",
+        properties: {
+          history: {
+            type: "array",
+            items: {
+              type: "object",
+            },
+          },
+        },
+        required: ["history"],
+        example: {
+          history: [
+            {
+              role: "user",
+              content: "What is AnythingLLM?",
+              sentAt: 1692851630,
+            },
+            {
+              role: "assistant",
+              content:
+                "AnythingLLM is a platform that allows you to convert notes, PDFs, and other source materials into a chatbot. It ensures privacy, cites its answers, and allows multiple people to interact with the same documents simultaneously. It is particularly useful for businesses to enhance the visibility and readability of various written communications such as SOPs, contracts, and sales calls. You can try it out with a free trial to see if it meets your business needs.",
+              sources: [
+                { source: "object about source document and snippets used" },
+              ],
+            },
+          ],
+        },
+      },
+      CreateWorkspaceRequest: {
+        type: "object",
+        properties: {
+          name: {
+            type: "string",
+            example: "My New Workspace",
+          },
+          parentWorkspaceId: {
+            type: "string",
+            nullable: true,
+            example: null,
+          },
+          similarityThreshold: {
+            type: "number",
+            nullable: true,
+          },
+          openAiTemp: {
+            type: "number",
+            nullable: true,
+          },
+          openAiHistory: {
+            type: "number",
+            nullable: true,
+          },
+          openAiPrompt: {
+            type: "string",
+            nullable: true,
+          },
+          queryRefusalResponse: {
+            type: "string",
+            nullable: true,
+          },
+          chatMode: {
+            type: "string",
+            enum: ["chat", "query", "automatic"],
+            nullable: true,
+          },
+          topN: {
+            type: "number",
+            nullable: true,
+          },
+        },
+        required: ["name"],
+      },
+      UpdateWorkspaceRequest: {
+        type: "object",
+        properties: {
+          name: {
+            type: "string",
+            example: "string",
+          },
+          openAiTemp: {
+            type: "number",
+            nullable: true,
+            example: 0.7,
+          },
+          openAiHistory: {
+            type: "number",
+            nullable: true,
+            example: 0,
+          },
+          lastUpdatedAt: {
+            type: "string",
+            nullable: true,
+            example: "2024-01-01T00:00:00.000Z",
+          },
+          openAiPrompt: {
+            type: "string",
+            example: "string",
+            nullable: true,
+          },
+          similarityThreshold: {
+            type: "number",
+            nullable: true,
+            example: 0.7,
+          },
+          chatProvider: {
+            type: "string",
+            nullable: true,
+          },
+          chatModel: {
+            type: "string",
+            nullable: true,
+          },
+          topN: {
+            type: "number",
+            nullable: true,
+          },
+          chatMode: {
+            type: "string",
+            enum: ["chat", "query", "automatic"],
+            nullable: true,
+          },
+          agentProvider: {
+            type: "string",
+            nullable: true,
+          },
+          agentModel: {
+            type: "string",
+            nullable: true,
+            example: "gpt-4",
+          },
+          queryRefusalResponse: {
+            type: "string",
+            nullable: true,
+            example: "string",
+          },
+          vectorSearchMode: {
+            type: "string",
+            enum: ["default", "rerank"],
+            nullable: true,
+          },
+          includeChildDocs: {
+            type: "boolean",
+            example: false,
+            nullable: true,
+          },
+          includeAncestorDocs: {
+            type: "boolean",
+            example: false,
+            nullable: true,
+          },
+        },
+      },
     },
   },
 };

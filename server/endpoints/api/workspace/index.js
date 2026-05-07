@@ -29,16 +29,8 @@ function apiWorkspaceEndpoints(app) {
       required: true,
       content: {
         "application/json": {
-          example: {
-            name: "My New Workspace",
-            parentWorkspaceId: null,
-            similarityThreshold: 0.7,
-            openAiTemp: 0.7,
-            openAiHistory: 20,
-            openAiPrompt: "Custom prompt for responses",
-            queryRefusalResponse: "Custom refusal message",
-            chatMode: "chat",
-            topN: 4
+          schema: {
+            $ref: "#/components/schemas/CreateWorkspaceRequest"
           }
         }
       }
@@ -47,43 +39,14 @@ function apiWorkspaceEndpoints(app) {
       content: {
         "application/json": {
           schema: {
-            type: 'object',
-            properties: {
-              workspace: {
-                type: 'object',
-                properties: {
-                  id: { type: 'integer' },
-                  name: { type: 'string' },
-                  slug: { type: 'string' },
-                  createdAt: { type: 'string', format: 'date-time' },
-                  openAiTemp: { type: 'number', nullable: true },
-                  lastUpdatedAt: { type: 'string', format: 'date-time' },
-                  openAiHistory: { type: 'integer' },
-                  openAiPrompt: { type: 'string', nullable: true },
-                },
-              },
-              message: { type: 'string' },
-            },
-            example: {
-              workspace: {
-                "id": 79,
-                "name": "Sample workspace",
-                "slug": "sample-workspace",
-                "createdAt": "2023-08-17 00:45:03",
-                "openAiTemp": null,
-                "lastUpdatedAt": "2023-08-17 00:45:03",
-                "openAiHistory": 20,
-                "openAiPrompt": null
-              },
-              message: 'Workspace created'
-            }
+            $ref: "#/components/schemas/CreateWorkspaceResponse"
           }
         }
       }
     }
     #swagger.responses[403] = {
       schema: {
-        "$ref": "#/definitions/InvalidAPIKey"
+        "$ref": "#/components/schemas/InvalidAPIKey"
       }
     }
     */
@@ -127,29 +90,14 @@ function apiWorkspaceEndpoints(app) {
       content: {
         "application/json": {
           schema: {
-            type: 'object',
-            example: {
-              workspaces: [
-                {
-                  "id": 79,
-                  "name": "Sample workspace",
-                  "slug": "sample-workspace",
-                  "createdAt": "2023-08-17 00:45:03",
-                  "openAiTemp": null,
-                  "lastUpdatedAt": "2023-08-17 00:45:03",
-                  "openAiHistory": 20,
-                  "openAiPrompt": null,
-                  "threads": []
-                }
-              ],
-            }
+            $ref: "#/components/schemas/ListWorkspacesResponse"
           }
         }
       }
     }
     #swagger.responses[403] = {
       schema: {
-        "$ref": "#/definitions/InvalidAPIKey"
+        "$ref": "#/components/schemas/InvalidAPIKey"
       }
     }
     */
@@ -188,30 +136,14 @@ function apiWorkspaceEndpoints(app) {
       content: {
         "application/json": {
           schema: {
-            type: 'object',
-            example: {
-              workspace: [
-                {
-                  "id": 79,
-                  "name": "My workspace",
-                  "slug": "my-workspace-123",
-                  "createdAt": "2023-08-17 00:45:03",
-                  "openAiTemp": null,
-                  "lastUpdatedAt": "2023-08-17 00:45:03",
-                  "openAiHistory": 20,
-                  "openAiPrompt": null,
-                  "documents": [],
-                  "threads": []
-                }
-              ]
-            }
+            $ref: "#/components/schemas/GetWorkspaceResponse"
           }
         }
       }
     }
     #swagger.responses[403] = {
       schema: {
-        "$ref": "#/definitions/InvalidAPIKey"
+        "$ref": "#/components/schemas/InvalidAPIKey"
       }
     }
     */
@@ -255,7 +187,7 @@ function apiWorkspaceEndpoints(app) {
     }
     #swagger.responses[403] = {
       schema: {
-        "$ref": "#/definitions/InvalidAPIKey"
+        "$ref": "#/components/schemas/InvalidAPIKey"
       }
     }
     */
@@ -308,13 +240,11 @@ function apiWorkspaceEndpoints(app) {
     #swagger.requestBody = {
       description: 'JSON object containing new settings to update a workspace. All keys are optional and will not update unless provided',
       required: true,
+
       content: {
         "application/json": {
-          example: {
-            "name": 'Updated Workspace Name',
-            "openAiTemp": 0.2,
-            "openAiHistory": 20,
-            "openAiPrompt": "Respond to all inquires and questions in binary - do not respond in any other format."
+          schema: {
+            $ref: "#/components/schemas/UpdateWorkspaceRequest"
           }
         }
       }
@@ -323,28 +253,14 @@ function apiWorkspaceEndpoints(app) {
       content: {
         "application/json": {
           schema: {
-            type: 'object',
-            example: {
-              workspace: {
-                "id": 79,
-                "name": "My workspace",
-                "slug": "my-workspace-123",
-                "createdAt": "2023-08-17 00:45:03",
-                "openAiTemp": null,
-                "lastUpdatedAt": "2023-08-17 00:45:03",
-                "openAiHistory": 20,
-                "openAiPrompt": null,
-                "documents": []
-              },
-              message: null,
-            }
+            $ref: "#/components/schemas/UpdateWorkspaceResponse"
           }
         }
       }
     }
     #swagger.responses[403] = {
       schema: {
-        "$ref": "#/definitions/InvalidAPIKey"
+        "$ref": "#/components/schemas/InvalidAPIKey"
       }
     }
     */
@@ -406,28 +322,14 @@ function apiWorkspaceEndpoints(app) {
       content: {
         "application/json": {
           schema: {
-            type: 'object',
-            example: {
-              history: [
-                {
-                  "role": "user",
-                  "content": "What is AnythingLLM?",
-                  "sentAt": 1692851630
-                },
-                {
-                  "role": "assistant",
-                  "content": "AnythingLLM is a platform that allows you to convert notes, PDFs, and other source materials into a chatbot. It ensures privacy, cites its answers, and allows multiple people to interact with the same documents simultaneously. It is particularly useful for businesses to enhance the visibility and readability of various written communications such as SOPs, contracts, and sales calls. You can try it out with a free trial to see if it meets your business needs.",
-                  "sources": [{"source": "object about source document and snippets used"}]
-                }
-              ]
-            }
+            $ref: "#/components/schemas/GetWorkspaceChatsResponse"
           }
         }
       }
     }
     #swagger.responses[403] = {
       schema: {
-        "$ref": "#/definitions/InvalidAPIKey"
+        "$ref": "#/components/schemas/InvalidAPIKey"
       }
     }
     */
@@ -498,28 +400,14 @@ function apiWorkspaceEndpoints(app) {
       content: {
         "application/json": {
           schema: {
-            type: 'object',
-            example: {
-              workspace: {
-                "id": 79,
-                "name": "My workspace",
-                "slug": "my-workspace-123",
-                "createdAt": "2023-08-17 00:45:03",
-                "openAiTemp": null,
-                "lastUpdatedAt": "2023-08-17 00:45:03",
-                "openAiHistory": 20,
-                "openAiPrompt": null,
-                "documents": []
-              },
-              message: null,
-            }
+            $ref: "#/components/schemas/UpdateWorkspaceResponse"
           }
         }
       }
     }
     #swagger.responses[403] = {
       schema: {
-        "$ref": "#/definitions/InvalidAPIKey"
+        "$ref": "#/components/schemas/InvalidAPIKey"
       }
     }
     */
