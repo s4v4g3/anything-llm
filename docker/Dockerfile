@@ -5,6 +5,10 @@ FROM ubuntu:noble-20251013 AS base
 ARG ARG_UID=1000
 ARG ARG_GID=1000
 
+COPY docker/silabs.pem /usr/local/share/ca-certificates/silabs.pem
+ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/silabs.pem
+RUN echo insecure >> ~/.curlrc
+
 FROM base AS build-arm64
 RUN echo "Preparing build of AnythingLLM image for arm64 architecture"
 
@@ -55,6 +59,7 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh && \
     chmod +x /usr/local/bin/docker-healthcheck.sh
 
 USER anythingllm
+RUN echo insecure > ~/.curlrc
 WORKDIR /app
 
 # Puppeteer does not ship with an ARM86 compatible build for Chromium
@@ -132,6 +137,7 @@ FROM build-${TARGETARCH} AS build
 RUN echo "Running common build flow of AnythingLLM image for all architectures"
 
 USER anythingllm
+RUN echo insecure > ~/.curlrc
 WORKDIR /app
 
 # Install & Build frontend layer
@@ -141,6 +147,7 @@ WORKDIR /app
 FROM --platform=$BUILDPLATFORM node:18-slim AS frontend-build
 WORKDIR /app/frontend
 COPY ./frontend/package.json ./frontend/yarn.lock ./
+RUN yarn config set strict-ssl false
 RUN yarn install --network-timeout 100000 && yarn cache clean
 COPY ./frontend/ ./
 RUN yarn build
@@ -149,18 +156,21 @@ WORKDIR /app
 # Install server layer
 # Also pull and build collector deps (chromium issues prevent bad bindings)
 FROM build AS backend-build
-COPY --chown=anythingllm:anythingllm ./server /app/server/
+
 WORKDIR /app/server
+COPY ./server/package.json ./server/yarn.lock ./
 RUN yarn install --production --network-timeout 100000 && yarn cache clean
 WORKDIR /app
 
 # Install collector dependencies
-COPY --chown=anythingllm:anythingllm ./collector/ ./collector/
 WORKDIR /app/collector
+COPY ./collector/package.json ./collector/yarn.lock ./
 ENV PUPPETEER_DOWNLOAD_BASE_URL=https://storage.googleapis.com/chrome-for-testing-public
 RUN yarn install --production --network-timeout 100000 && yarn cache clean
 
 WORKDIR /app
+COPY --chown=anythingllm:anythingllm ./server ./server/
+COPY --chown=anythingllm:anythingllm ./collector/ ./collector/
 USER anythingllm
 
 # Since we are building from backend-build we just need to move built frontend into server/public

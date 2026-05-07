@@ -30,6 +30,7 @@ function apiWorkspaceEndpoints(app) {
         "application/json": {
           example: {
             name: "My New Workspace",
+            parentWorkspaceId: null,
             similarityThreshold: 0.7,
             openAiTemp: 0.7,
             openAiHistory: 20,
@@ -46,6 +47,22 @@ function apiWorkspaceEndpoints(app) {
         "application/json": {
           schema: {
             type: 'object',
+            properties: {
+              workspace: {
+                type: 'object',
+                properties: {
+                  id: { type: 'integer' },
+                  name: { type: 'string' },
+                  slug: { type: 'string' },
+                  createdAt: { type: 'string', format: 'date-time' },
+                  openAiTemp: { type: 'number', nullable: true },
+                  lastUpdatedAt: { type: 'string', format: 'date-time' },
+                  openAiHistory: { type: 'integer' },
+                  openAiPrompt: { type: 'string', nullable: true },
+                },
+              },
+              message: { type: 'string' },
+            },
             example: {
               workspace: {
                 "id": 79,

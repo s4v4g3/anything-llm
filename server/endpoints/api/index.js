@@ -8,6 +8,9 @@ const { apiWorkspaceThreadEndpoints } = require("./workspaceThread");
 const { apiUserManagementEndpoints } = require("./userManagement");
 const { apiOpenAICompatibleEndpoints } = require("./openai");
 const { apiEmbedEndpoints } = require("./embed");
+const {
+  apiWorkspaceHierarchyEndpoints,
+} = require("./workspaceHierarchy");
 
 // All endpoints must be documented and pass through the validApiKey Middleware.
 // How to JSDoc an endpoint
@@ -19,6 +22,7 @@ function developerEndpoints(app, router) {
   apiAdminEndpoints(router);
   apiSystemEndpoints(router);
   apiWorkspaceEndpoints(router);
+  apiWorkspaceHierarchyEndpoints(router);
   apiDocumentEndpoints(router);
   apiWorkspaceThreadEndpoints(router);
   apiUserManagementEndpoints(router);

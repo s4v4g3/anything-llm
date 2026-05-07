@@ -168,6 +168,16 @@ const Workspace = {
     return slugifyModule(...args);
   },
 
+  createSlug: function (length = 7) {
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  },
+
   /**
    * Validate the fields for a workspace update.
    * @param {Object} updates - The updates to validate - should be writable fields
@@ -196,13 +206,19 @@ const Workspace = {
    */
   new: async function (name = null, creatorId = null, additionalFields = {}) {
     if (!name) return { workspace: null, message: "name cannot be null" };
-    var slug = this.slugify(name, { lower: true });
-    slug = slug || uuidv4();
 
-    const existingBySlug = await this.get({ slug });
-    if (existingBySlug !== null) {
-      const slugSeed = Math.floor(10000000 + Math.random() * 90000000);
-      slug = this.slugify(`${name}-${slugSeed}`, { lower: true });
+    //var slug = this.slugify(name, { lower: true });
+    //slug = slug || uuidv4();
+
+    // Update to use uuid for the slug to guarantee uniqueness
+    // since it's not used for anything other than an identifier.
+    let slug;
+    while (true) {
+      slug = this.createSlug();
+      const existingBySlug = await this.get({ slug });
+      if (!existingBySlug) {
+        break;
+      }
     }
 
     // Compute hierarchy fields if parentWorkspaceId is provided
@@ -766,7 +782,7 @@ const Workspace = {
         where: {
           path: { startsWith: `${workspace.path}/` },
         },
-        orderBy: { path: "asc" },
+        orderBy: { name: "asc" },
       });
     } catch (error) {
       console.error(error.message);
@@ -827,11 +843,11 @@ const Workspace = {
               { path: { startsWith: `${root.path}/` } },
             ],
           },
-          orderBy: { path: "asc" },
+          orderBy: { name: "asc" },
         });
       } else {
         workspaces = await prisma.workspaces.findMany({
-          orderBy: { path: "asc" },
+          orderBy: { name: "asc" },
         });
       }
 

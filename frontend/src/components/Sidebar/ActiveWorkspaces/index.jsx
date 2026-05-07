@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import * as Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Workspace from "@/models/workspace";
 import ManageWorkspace, {
   useManageWorkspaceModal,
 } from "../../Modals/ManageWorkspace";
-import paths from "@/utils/paths";
 import { useParams, useMatch } from "react-router-dom";
 import useUser from "@/hooks/useUser";
 import useWorkspaceTree from "@/hooks/useWorkspaceTree";
