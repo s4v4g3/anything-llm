@@ -4,8 +4,9 @@ function apiAuthEndpoints(app) {
   if (!app) return;
 
   app.get("/v1/auth", [validApiKey], (_, response) => {
-    /* 
+    /*
     #swagger.tags = ['Authentication']
+    #swagger.operationId = 'verifyAuth'
     #swagger.description = 'Verify the attached Authentication header contains a valid API token.'
     #swagger.responses[200] = {
       description: 'Valid auth token was found.',
@@ -17,9 +18,9 @@ function apiAuthEndpoints(app) {
               authenticated: true,
             }
           }
-        }           
+        }
       }
-    }  
+    }
     #swagger.responses[403] = {
       schema: {
         "$ref": "#/definitions/InvalidAPIKey"

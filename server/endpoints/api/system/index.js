@@ -13,6 +13,7 @@ function apiSystemEndpoints(app) {
   app.get("/v1/system/env-dump", async (_, response) => {
     /*
    #swagger.tags = ['System Settings']
+   #swagger.operationId = 'exportEnvironment'
    #swagger.description = 'Dump all settings to file storage'
    #swagger.responses[403] = {
      schema: {
@@ -34,6 +35,7 @@ function apiSystemEndpoints(app) {
   app.get("/v1/system", [validApiKey], async (_, response) => {
     /*
     #swagger.tags = ['System Settings']
+    #swagger.operationId = 'getSystemSettings'
     #swagger.description = 'Get all current system settings that are defined.'
     #swagger.responses[200] = {
       content: {
@@ -71,6 +73,7 @@ function apiSystemEndpoints(app) {
   app.get("/v1/system/vector-count", [validApiKey], async (_, response) => {
     /*
     #swagger.tags = ['System Settings']
+    #swagger.operationId = 'getVectorCount'
     #swagger.description = 'Number of all vectors in connected vector database'
     #swagger.responses[200] = {
       content: {
@@ -106,6 +109,7 @@ function apiSystemEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['System Settings']
+      #swagger.operationId = 'updateSystemSettings'
       #swagger.description = 'Update a system setting or preference.'
       #swagger.requestBody = {
         description: 'Key pair object that matches a valid setting and value. Get keys from GET /v1/system or refer to codebase.',
@@ -155,6 +159,7 @@ function apiSystemEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['System Settings']
+    #swagger.operationId = 'exportChats'
     #swagger.description = 'Export all of the chats from the system in a known format. Output depends on the type sent. Will be send with the correct header for the output.'
    #swagger.parameters['type'] = {
       in: 'query',
@@ -210,6 +215,7 @@ function apiSystemEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['System Settings']
+      #swagger.operationId = 'removeDocuments'
       #swagger.description = 'Permanently remove documents from the system.'
       #swagger.requestBody = {
         description: 'Array of document names to be removed permanently.',

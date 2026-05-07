@@ -10,6 +10,7 @@ function apiEmbedEndpoints(app) {
   app.get("/v1/embed", [validApiKey], async (request, response) => {
     /*
       #swagger.tags = ['Embed']
+      #swagger.operationId = 'listEmbeds'
       #swagger.description = 'List all active embeds'
       #swagger.responses[200] = {
         content: {
@@ -81,6 +82,7 @@ function apiEmbedEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['Embed']
+      #swagger.operationId = 'getEmbedChats'
       #swagger.description = 'Get all chats for a specific embed'
       #swagger.parameters['embedUuid'] = {
         in: 'path',
@@ -143,6 +145,7 @@ function apiEmbedEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['Embed']
+      #swagger.operationId = 'getEmbedSessionChats'
       #swagger.description = 'Get chats for a specific embed and session'
       #swagger.parameters['embedUuid'] = {
         in: 'path',
@@ -201,6 +204,7 @@ function apiEmbedEndpoints(app) {
   app.post("/v1/embed/new", [validApiKey], async (request, response) => {
     /*
       #swagger.tags = ['Embed']
+      #swagger.operationId = 'createEmbed'
       #swagger.description = 'Create a new embed configuration'
       #swagger.requestBody = {
         description: 'JSON object containing embed configuration details',
@@ -287,6 +291,7 @@ function apiEmbedEndpoints(app) {
   app.post("/v1/embed/:embedUuid", [validApiKey], async (request, response) => {
     /*
       #swagger.tags = ['Embed']
+      #swagger.operationId = 'updateEmbed'
       #swagger.description = 'Update an existing embed configuration'
       #swagger.parameters['embedUuid'] = {
         in: 'path',
@@ -360,6 +365,7 @@ function apiEmbedEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['Embed']
+      #swagger.operationId = 'deleteEmbed'
       #swagger.description = 'Delete an existing embed configuration'
       #swagger.parameters['embedUuid'] = {
         in: 'path',

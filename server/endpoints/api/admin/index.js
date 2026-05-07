@@ -15,6 +15,7 @@ function apiAdminEndpoints(app) {
   app.get("/v1/admin/is-multi-user-mode", [validApiKey], (_, response) => {
     /*
     #swagger.tags = ['Admin']
+    #swagger.operationId = 'isMultiUserMode'
     #swagger.description = 'Check to see if the instance is in multi-user-mode first. Methods are disabled until multi user mode is enabled via the UI.'
     #swagger.responses[200] = {
       content: {
@@ -41,6 +42,7 @@ function apiAdminEndpoints(app) {
   app.get("/v1/admin/users", [validApiKey], async (request, response) => {
     /*
     #swagger.tags = ['Admin']
+    #swagger.operationId = 'listUsers'
     #swagger.description = 'Check to see if the instance is in multi-user-mode first. Methods are disabled until multi user mode is enabled via the UI.'
     #swagger.responses[200] = {
       content: {
@@ -85,6 +87,7 @@ function apiAdminEndpoints(app) {
   app.post("/v1/admin/users/new", [validApiKey], async (request, response) => {
     /*
     #swagger.tags = ['Admin']
+    #swagger.operationId = 'createUser'
     #swagger.description = 'Create a new user with username and password. Methods are disabled until multi user mode is enabled via the UI.'
     #swagger.requestBody = {
         description: 'Key pair object that will define the new user to add to the system.',
@@ -143,6 +146,7 @@ function apiAdminEndpoints(app) {
   app.post("/v1/admin/users/:id", [validApiKey], async (request, response) => {
     /*
     #swagger.tags = ['Admin']
+    #swagger.operationId = 'updateUser'
     #swagger.parameters['id'] = {
       in: 'path',
       description: 'id of the user in the database.',
@@ -218,6 +222,7 @@ function apiAdminEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Admin']
+    #swagger.operationId = 'deleteUser'
     #swagger.description = 'Delete existing user by id. Methods are disabled until multi user mode is enabled via the UI.'
     #swagger.parameters['id'] = {
       in: 'path',
@@ -270,6 +275,7 @@ function apiAdminEndpoints(app) {
   app.get("/v1/admin/invites", [validApiKey], async (request, response) => {
     /*
     #swagger.tags = ['Admin']
+    #swagger.operationId = 'listInvites'
     #swagger.description = 'List all existing invitations to instance regardless of status. Methods are disabled until multi user mode is enabled via the UI.'
     #swagger.responses[200] = {
       content: {
@@ -316,6 +322,7 @@ function apiAdminEndpoints(app) {
   app.post("/v1/admin/invite/new", [validApiKey], async (request, response) => {
     /*
     #swagger.tags = ['Admin']
+    #swagger.operationId = 'createInvite'
     #swagger.description = 'Create a new invite code for someone to use to register with instance. Methods are disabled until multi user mode is enabled via the UI.'
     #swagger.requestBody = {
         description: 'Request body for creation parameters of the invitation',
@@ -377,6 +384,7 @@ function apiAdminEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Admin']
+    #swagger.operationId = 'deactivateInvite'
     #swagger.description = 'Deactivates (soft-delete) invite by id. Methods are disabled until multi user mode is enabled via the UI.'
     #swagger.parameters['id'] = {
       in: 'path',
@@ -428,6 +436,7 @@ function apiAdminEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['Admin']
+      #swagger.operationId = 'getWorkspaceUsers'
       #swagger.parameters['workspaceId'] = {
         in: 'path',
         description: 'id of the workspace.',
@@ -483,6 +492,7 @@ function apiAdminEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Admin']
+    #swagger.operationId = 'updateWorkspaceUsers'
     #swagger.deprecated = true
     #swagger.parameters['workspaceId'] = {
       in: 'path',
@@ -550,6 +560,7 @@ function apiAdminEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Admin']
+    #swagger.operationId = 'manageWorkspaceUsers'
     #swagger.parameters['workspaceSlug'] = {
       in: 'path',
       description: 'slug of the workspace in the database',
@@ -665,6 +676,7 @@ function apiAdminEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Admin']
+    #swagger.operationId = 'listWorkspaceChats'
     #swagger.description = 'All chats in the system ordered by most recent. Methods are disabled until multi user mode is enabled via the UI.'
     #swagger.requestBody = {
         description: 'Page offset to show of workspace chats. All fields are optional and will not update unless specified.',
@@ -721,6 +733,7 @@ function apiAdminEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Admin']
+    #swagger.operationId = 'updateAdminPreferences'
     #swagger.description = 'Update multi-user preferences for instance. Methods are disabled until multi user mode is enabled via the UI.'
     #swagger.requestBody = {
       description: 'Object with setting key and new value to set. All keys are optional and will not update unless specified.',

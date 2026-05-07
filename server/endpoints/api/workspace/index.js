@@ -22,6 +22,7 @@ function apiWorkspaceEndpoints(app) {
   app.post("/v1/workspace/new", [validApiKey], async (request, response) => {
     /*
     #swagger.tags = ['Workspaces']
+    #swagger.operationId = 'createWorkspace'
     #swagger.description = 'Create a new workspace'
     #swagger.requestBody = {
       description: 'JSON object containing workspace configuration.',
@@ -120,6 +121,7 @@ function apiWorkspaceEndpoints(app) {
   app.get("/v1/workspaces", [validApiKey], async (request, response) => {
     /*
     #swagger.tags = ['Workspaces']
+    #swagger.operationId = 'listWorkspaces'
     #swagger.description = 'List all current workspaces'
     #swagger.responses[200] = {
       content: {
@@ -174,6 +176,7 @@ function apiWorkspaceEndpoints(app) {
   app.get("/v1/workspace/:slug", [validApiKey], async (request, response) => {
     /*
     #swagger.tags = ['Workspaces']
+    #swagger.operationId = 'getWorkspace'
     #swagger.description = 'Get a workspace by its unique slug.'
     #swagger.parameters['slug'] = {
         in: 'path',
@@ -242,6 +245,7 @@ function apiWorkspaceEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Workspaces']
+    #swagger.operationId = 'deleteWorkspace'
     #swagger.description = 'Deletes a workspace by its slug.'
     #swagger.parameters['slug'] = {
         in: 'path',
@@ -293,6 +297,7 @@ function apiWorkspaceEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Workspaces']
+    #swagger.operationId = 'updateWorkspace'
     #swagger.description = 'Update workspace settings by its unique slug.'
     #swagger.parameters['slug'] = {
         in: 'path',
@@ -371,6 +376,7 @@ function apiWorkspaceEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Workspaces']
+    #swagger.operationId = 'getWorkspaceChats'
     #swagger.description = 'Get a workspaces chats regardless of user by its unique slug.'
     #swagger.parameters['slug'] = {
         in: 'path',
@@ -468,6 +474,7 @@ function apiWorkspaceEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Workspaces']
+    #swagger.operationId = 'updateWorkspaceEmbeddings'
     #swagger.description = 'Add or remove documents from a workspace by its unique slug.'
     #swagger.parameters['slug'] = {
         in: 'path',
@@ -545,6 +552,7 @@ function apiWorkspaceEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['Workspaces']
+      #swagger.operationId = 'updateWorkspacePin'
       #swagger.description = 'Add or remove pin from a document in a workspace by its unique slug.'
       #swagger.parameters['slug'] = {
           in: 'path',
@@ -613,6 +621,7 @@ function apiWorkspaceEndpoints(app) {
     async (request, response) => {
       /*
    #swagger.tags = ['Workspaces']
+   #swagger.operationId = 'chatWithWorkspace'
    #swagger.description = 'Execute a chat with a workspace'
    #swagger.requestBody = {
        description: 'Send a prompt to the workspace and the type of conversation (automatic, query or chat).<br/><b>Query:</b> Will not use LLM unless there are relevant sources from vectorDB & does not recall chat history.<br/><b>Automatic:</b> Will use tool-calling if the provider supports native tool calling without needing to invoke @agent.<br/><b>Chat:</b> Uses LLM general knowledge w/custom embeddings to produce output, uses rolling chat history.<br/><b>Attachments:</b> Can include images and documents.<br/><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Document attachments:</b> must have the mime type <code>application/anythingllm-document</code> - otherwise it will be passed to the LLM as an image and may fail to process. This uses the built-in document processor to first parse the document to text before injecting it into the context window.',
@@ -747,6 +756,7 @@ function apiWorkspaceEndpoints(app) {
     async (request, response) => {
       /*
    #swagger.tags = ['Workspaces']
+   #swagger.operationId = 'streamChatWithWorkspace'
    #swagger.description = 'Execute a streamable chat with a workspace'
    #swagger.requestBody = {
        description: 'Send a prompt to the workspace and the type of conversation (automatic, query or chat).<br/><b>Query:</b> Will not use LLM unless there are relevant sources from vectorDB & does not recall chat history.<br/><b>Automatic:</b> Will use tool-calling if the provider supports native tool calling without needing to invoke @agent.<br/><b>Chat:</b> Uses LLM general knowledge w/custom embeddings to produce output, uses rolling chat history.<br/><b>Attachments:</b> Can include images and documents.<br/><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Document attachments:</b> must have the mime type <code>application/anythingllm-document</code> - otherwise it will be passed to the LLM as an image and may fail to process. This uses the built-in document processor to first parse the document to text before injecting it into the context window.',
@@ -909,6 +919,7 @@ function apiWorkspaceEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Workspaces']
+    #swagger.operationId = 'vectorSearchWorkspace'
     #swagger.description = 'Perform a vector similarity search in a workspace'
     #swagger.parameters['slug'] = {
         in: 'path',

@@ -24,6 +24,7 @@ function apiWorkspaceThreadEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['Workspace Threads']
+      #swagger.operationId = 'createThread'
       #swagger.description = 'Create a new workspace thread'
       #swagger.parameters['slug'] = {
           in: 'path',
@@ -114,6 +115,7 @@ function apiWorkspaceThreadEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['Workspace Threads']
+      #swagger.operationId = 'updateThread'
       #swagger.description = 'Update thread name by its unique slug.'
       #swagger.parameters['slug'] = {
           in: 'path',
@@ -195,6 +197,7 @@ function apiWorkspaceThreadEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Workspace Threads']
+    #swagger.operationId = 'deleteThread'
     #swagger.description = 'Delete a workspace thread'
     #swagger.parameters['slug'] = {
         in: 'path',
@@ -244,6 +247,7 @@ function apiWorkspaceThreadEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['Workspace Threads']
+      #swagger.operationId = 'getThreadChats'
       #swagger.description = 'Get chats for a workspace thread'
       #swagger.parameters['slug'] = {
           in: 'path',
@@ -324,6 +328,7 @@ function apiWorkspaceThreadEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['Workspace Threads']
+      #swagger.operationId = 'chatWithThread'
       #swagger.description = 'Chat with a workspace thread'
       #swagger.parameters['slug'] = {
           in: 'path',
@@ -470,6 +475,7 @@ function apiWorkspaceThreadEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['Workspace Threads']
+      #swagger.operationId = 'streamChatWithThread'
       #swagger.description = 'Stream chat with a workspace thread'
       #swagger.parameters['slug'] = {
           in: 'path',

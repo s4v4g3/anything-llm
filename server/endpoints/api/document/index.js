@@ -51,6 +51,7 @@ function apiDocumentEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Documents']
+    #swagger.operationId = 'uploadDocument'
     #swagger.description = 'Upload a new file to AnythingLLM to be parsed and prepared for embedding, with optional metadata.'
     #swagger.requestBody = {
       description: 'File to be uploaded.',
@@ -73,6 +74,12 @@ function apiDocumentEndpoints(app) {
               metadata: {
                 type: 'object',
                 description: 'Key:Value pairs of metadata to attach to the document in JSON Object format. Only specific keys are allowed - see example.',
+                properties: {
+                   title: { type: 'string'},
+                   docAuthor: { type: 'string'},
+                   description: { type: 'string'},
+                   docSource: { type: 'string'},
+                },
                 example: { 'title': 'Custom Title', 'docAuthor': 'Author Name', 'description': 'A brief description', 'docSource': 'Source of the document' }
               }
             },
@@ -86,6 +93,29 @@ function apiDocumentEndpoints(app) {
         "application/json": {
           schema: {
             type: 'object',
+            properties: {
+              success: { type: 'boolean' },
+              error: { type: 'string', nullable: true },
+              documents: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    location: { type: 'string' },
+                    name: { type: 'string' },
+                    url: { type: 'string' },
+                    title: { type: 'string' },
+                    docAuthor: { type: 'string' },
+                    description: { type: 'string' },
+                    docSource: { type: 'string' },
+                    chunkSource: { type: 'string' },
+                    published: { type: 'string' },
+                    wordCount: { type: 'number' },
+                    token_count_estimate: { type: 'number' },
+                  },
+                },
+              },
+            },
             example: {
               success: true,
               error: null,
@@ -176,6 +206,7 @@ function apiDocumentEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['Documents']
+      #swagger.operationId = 'uploadDocumentToFolder'
       #swagger.description = 'Upload a new file to a specific folder in AnythingLLM to be parsed and prepared for embedding. If the folder does not exist, it will be created.'
       #swagger.parameters['folderName'] = {
         in: 'path',
@@ -357,6 +388,7 @@ function apiDocumentEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Documents']
+    #swagger.operationId = 'uploadDocumentLink'
     #swagger.description = 'Upload a valid URL for AnythingLLM to scrape and prepare for embedding. Optionally, specify a comma-separated list of workspace slugs to embed the document into post-upload.'
     #swagger.requestBody = {
       description: 'Link of web address to be scraped and optionally a comma-separated list of workspace slugs to embed the document into post-upload, and optional metadata.',
@@ -481,6 +513,7 @@ function apiDocumentEndpoints(app) {
     async (request, response) => {
       /*
      #swagger.tags = ['Documents']
+     #swagger.operationId = 'uploadDocumentRawText'
      #swagger.description = 'Upload a file by specifying its raw text content and metadata values without having to upload a file.'
      #swagger.requestBody = {
       description: 'Text content and metadata of the file to be saved to the system. Use metadata-schema endpoint to get the possible metadata keys',
@@ -622,6 +655,7 @@ function apiDocumentEndpoints(app) {
   app.get("/v1/documents", [validApiKey], async (_, response) => {
     /*
     #swagger.tags = ['Documents']
+    #swagger.operationId = 'listDocuments'
     #swagger.description = 'List of all locally-stored documents in instance'
     #swagger.responses[200] = {
       content: {
@@ -669,6 +703,7 @@ function apiDocumentEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Documents']
+    #swagger.operationId = 'getDocumentsByFolder'
     #swagger.description = 'Get all documents stored in a specific folder.'
     #swagger.parameters['folderName'] = {
       in: 'path',
@@ -733,6 +768,7 @@ function apiDocumentEndpoints(app) {
     async (_, response) => {
       /*
     #swagger.tags = ['Documents']
+    #swagger.operationId = 'getAcceptedFileTypes'
     #swagger.description = 'Check available filetypes and MIMEs that can be uploaded.'
     #swagger.responses[200] = {
       content: {
@@ -790,6 +826,7 @@ function apiDocumentEndpoints(app) {
     async (_, response) => {
       /*
     #swagger.tags = ['Documents']
+    #swagger.operationId = 'getDocumentMetadataSchema'
     #swagger.description = 'Get the known available metadata schema for when doing a raw-text upload and the acceptable type of value for each key.'
     #swagger.responses[200] = {
       content: {
@@ -839,6 +876,7 @@ function apiDocumentEndpoints(app) {
   app.get("/v1/document/:docName", [validApiKey], async (request, response) => {
     /*
     #swagger.tags = ['Documents']
+    #swagger.operationId = 'getDocument'
     #swagger.description = 'Get a single document by its unique AnythingLLM document name'
     #swagger.parameters['docName'] = {
         in: 'path',
@@ -897,6 +935,7 @@ function apiDocumentEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['Documents']
+      #swagger.operationId = 'createDocumentFolder'
       #swagger.description = 'Create a new folder inside the documents storage directory.'
       #swagger.requestBody = {
         description: 'Name of the folder to create.',
@@ -963,6 +1002,7 @@ function apiDocumentEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['Documents']
+      #swagger.operationId = 'removeDocumentFolder'
       #swagger.description = 'Remove a folder and all its contents from the documents storage directory.'
       #swagger.requestBody = {
         description: 'Name of the folder to remove.',
@@ -1022,6 +1062,7 @@ function apiDocumentEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['Documents']
+      #swagger.operationId = 'moveDocumentFiles'
       #swagger.description = 'Move files within the documents storage directory.'
       #swagger.requestBody = {
         description: 'Array of objects containing source and destination paths of files to move.',

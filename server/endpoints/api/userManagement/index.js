@@ -12,6 +12,7 @@ function apiUserManagementEndpoints(app) {
   app.get("/v1/users", [validApiKey], async (request, response) => {
     /*
       #swagger.tags = ['User Management']
+      #swagger.operationId = 'getUserManagementList'
       #swagger.description = 'List all users'
       #swagger.responses[200] = {
         content: {
@@ -70,6 +71,7 @@ function apiUserManagementEndpoints(app) {
     async (request, response) => {
       /*
       #swagger.tags = ['User Management']
+      #swagger.operationId = 'issueAuthToken'
       #swagger.description = 'Issue a temporary auth token for a user'
       #swagger.parameters['id'] = {
         in: 'path',

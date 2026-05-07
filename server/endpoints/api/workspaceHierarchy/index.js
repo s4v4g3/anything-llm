@@ -7,6 +7,7 @@ function apiWorkspaceHierarchyEndpoints(app) {
   app.get("/v1/workspaces/tree", [validApiKey], async (request, response) => {
     /*
     #swagger.tags = ['Workspace Hierarchy']
+    #swagger.operationId = 'getWorkspaceTree'
     #swagger.description = 'Get the full workspace tree showing all workspaces and their nested sub-workspaces.'
     #swagger.responses[200] = {
       content: {
@@ -57,6 +58,7 @@ function apiWorkspaceHierarchyEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Workspace Hierarchy']
+    #swagger.operationId = 'getWorkspaceSubtree'
     #swagger.description = 'Get the subtree rooted at a specific workspace.'
     #swagger.parameters['slug'] = {
         in: 'path',
@@ -126,6 +128,7 @@ function apiWorkspaceHierarchyEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Workspace Hierarchy']
+    #swagger.operationId = 'getWorkspaceChildren'
     #swagger.description = 'Get the direct children of a workspace.'
     #swagger.parameters['slug'] = {
         in: 'path',
@@ -186,6 +189,7 @@ function apiWorkspaceHierarchyEndpoints(app) {
     async (request, response) => {
       /*
     #swagger.tags = ['Workspace Hierarchy']
+    #swagger.operationId = 'getWorkspaceBreadcrumbs'
     #swagger.description = 'Get the breadcrumb (ancestor chain) for a workspace, including itself.'
     #swagger.parameters['slug'] = {
         in: 'path',

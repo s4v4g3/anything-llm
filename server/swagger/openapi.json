@@ -17,6 +17,7 @@
           "Authentication"
         ],
         "description": "Verify the attached Authentication header contains a valid API token.",
+        "operationId": "verifyAuth",
         "parameters": [],
         "responses": {
           "200": {
@@ -56,6 +57,7 @@
           "Admin"
         ],
         "description": "Check to see if the instance is in multi-user-mode first. Methods are disabled until multi user mode is enabled via the UI.",
+        "operationId": "isMultiUserMode",
         "parameters": [],
         "responses": {
           "200": {
@@ -95,6 +97,7 @@
           "Admin"
         ],
         "description": "Check to see if the instance is in multi-user-mode first. Methods are disabled until multi user mode is enabled via the UI.",
+        "operationId": "listUsers",
         "parameters": [],
         "responses": {
           "200": {
@@ -145,6 +148,7 @@
           "Admin"
         ],
         "description": "Create a new user with username and password. Methods are disabled until multi user mode is enabled via the UI.",
+        "operationId": "createUser",
         "parameters": [],
         "responses": {
           "200": {
@@ -211,6 +215,7 @@
           "Admin"
         ],
         "description": "Update existing user settings. Methods are disabled until multi user mode is enabled via the UI.",
+        "operationId": "updateUser",
         "parameters": [
           {
             "name": "id",
@@ -279,6 +284,7 @@
           "Admin"
         ],
         "description": "Delete existing user by id. Methods are disabled until multi user mode is enabled via the UI.",
+        "operationId": "deleteUser",
         "parameters": [
           {
             "name": "id",
@@ -335,6 +341,7 @@
           "Admin"
         ],
         "description": "List all existing invitations to instance regardless of status. Methods are disabled until multi user mode is enabled via the UI.",
+        "operationId": "listInvites",
         "parameters": [],
         "responses": {
           "200": {
@@ -387,6 +394,7 @@
           "Admin"
         ],
         "description": "Create a new invite code for someone to use to register with instance. Methods are disabled until multi user mode is enabled via the UI.",
+        "operationId": "createInvite",
         "parameters": [],
         "responses": {
           "200": {
@@ -452,6 +460,7 @@
           "Admin"
         ],
         "description": "Deactivates (soft-delete) invite by id. Methods are disabled until multi user mode is enabled via the UI.",
+        "operationId": "deactivateInvite",
         "parameters": [
           {
             "name": "id",
@@ -508,6 +517,7 @@
           "Admin"
         ],
         "description": "Retrieve a list of users with permissions to access the specified workspace.",
+        "operationId": "getWorkspaceUsers",
         "parameters": [
           {
             "name": "workspaceId",
@@ -572,6 +582,7 @@
           "Admin"
         ],
         "description": "Overwrite workspace permissions to only be accessible by the given user ids and admins. Methods are disabled until multi user mode is enabled via the UI.",
+        "operationId": "updateWorkspaceUsers",
         "parameters": [
           {
             "name": "workspaceId",
@@ -645,6 +656,7 @@
           "Admin"
         ],
         "description": "Set workspace permissions to be accessible by the given user ids and admins. Methods are disabled until multi user mode is enabled via the UI.",
+        "operationId": "manageWorkspaceUsers",
         "parameters": [
           {
             "name": "workspaceSlug",
@@ -733,6 +745,7 @@
           "Admin"
         ],
         "description": "All chats in the system ordered by most recent. Methods are disabled until multi user mode is enabled via the UI.",
+        "operationId": "listWorkspaceChats",
         "parameters": [],
         "responses": {
           "200": {
@@ -787,6 +800,7 @@
           "Admin"
         ],
         "description": "Update multi-user preferences for instance. Methods are disabled until multi user mode is enabled via the UI.",
+        "operationId": "updateAdminPreferences",
         "parameters": [],
         "responses": {
           "200": {
@@ -844,6 +858,7 @@
           "Documents"
         ],
         "description": "Upload a new file to AnythingLLM to be parsed and prepared for embedding, with optional metadata.",
+        "operationId": "uploadDocument",
         "parameters": [],
         "responses": {
           "200": {
@@ -852,6 +867,56 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "documents": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "location": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "url": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "docAuthor": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "docSource": {
+                            "type": "string"
+                          },
+                          "chunkSource": {
+                            "type": "string"
+                          },
+                          "published": {
+                            "type": "string"
+                          },
+                          "wordCount": {
+                            "type": "number"
+                          },
+                          "token_count_estimate": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
                   "example": {
                     "success": true,
                     "error": null,
@@ -920,6 +985,20 @@
                   "metadata": {
                     "type": "object",
                     "description": "Key:Value pairs of metadata to attach to the document in JSON Object format. Only specific keys are allowed - see example.",
+                    "properties": {
+                      "title": {
+                        "type": "string"
+                      },
+                      "docAuthor": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "docSource": {
+                        "type": "string"
+                      }
+                    },
                     "example": {
                       "title": "Custom Title",
                       "docAuthor": "Author Name",
@@ -940,6 +1019,7 @@
           "Documents"
         ],
         "description": "Upload a new file to a specific folder in AnythingLLM to be parsed and prepared for embedding. If the folder does not exist, it will be created.",
+        "operationId": "uploadDocumentToFolder",
         "parameters": [
           {
             "name": "folderName",
@@ -1058,6 +1138,7 @@
           "Documents"
         ],
         "description": "Upload a valid URL for AnythingLLM to scrape and prepare for embedding. Optionally, specify a comma-separated list of workspace slugs to embed the document into post-upload.",
+        "operationId": "uploadDocumentLink",
         "parameters": [],
         "responses": {
           "200": {
@@ -1145,6 +1226,7 @@
           "Documents"
         ],
         "description": "Upload a file by specifying its raw text content and metadata values without having to upload a file.",
+        "operationId": "uploadDocumentRawText",
         "parameters": [],
         "responses": {
           "200": {
@@ -1228,6 +1310,7 @@
           "Documents"
         ],
         "description": "List of all locally-stored documents in instance",
+        "operationId": "listDocuments",
         "parameters": [],
         "responses": {
           "200": {
@@ -1283,6 +1366,7 @@
           "Documents"
         ],
         "description": "Get all documents stored in a specific folder.",
+        "operationId": "getDocumentsByFolder",
         "parameters": [
           {
             "name": "folderName",
@@ -1353,6 +1437,7 @@
           "Documents"
         ],
         "description": "Check available filetypes and MIMEs that can be uploaded.",
+        "operationId": "getAcceptedFileTypes",
         "parameters": [],
         "responses": {
           "200": {
@@ -1415,6 +1500,7 @@
           "Documents"
         ],
         "description": "Get the known available metadata schema for when doing a raw-text upload and the acceptable type of value for each key.",
+        "operationId": "getDocumentMetadataSchema",
         "parameters": [],
         "responses": {
           "200": {
@@ -1462,6 +1548,7 @@
           "Documents"
         ],
         "description": "Get a single document by its unique AnythingLLM document name",
+        "operationId": "getDocument",
         "parameters": [
           {
             "name": "docName",
@@ -1530,6 +1617,7 @@
           "Documents"
         ],
         "description": "Create a new folder inside the documents storage directory.",
+        "operationId": "createDocumentFolder",
         "parameters": [],
         "responses": {
           "200": {
@@ -1587,6 +1675,7 @@
           "Documents"
         ],
         "description": "Remove a folder and all its contents from the documents storage directory.",
+        "operationId": "removeDocumentFolder",
         "parameters": [],
         "responses": {
           "200": {
@@ -1647,6 +1736,7 @@
           "Documents"
         ],
         "description": "Move files within the documents storage directory.",
+        "operationId": "moveDocumentFiles",
         "parameters": [],
         "responses": {
           "200": {
@@ -1709,6 +1799,7 @@
           "Workspaces"
         ],
         "description": "Create a new workspace",
+        "operationId": "createWorkspace",
         "parameters": [],
         "responses": {
           "200": {
@@ -1821,6 +1912,7 @@
           "Workspaces"
         ],
         "description": "List all current workspaces",
+        "operationId": "listWorkspaces",
         "parameters": [],
         "responses": {
           "200": {
@@ -1875,6 +1967,7 @@
           "Workspaces"
         ],
         "description": "Get a workspace by its unique slug.",
+        "operationId": "getWorkspace",
         "parameters": [
           {
             "name": "slug",
@@ -1938,6 +2031,7 @@
           "Workspaces"
         ],
         "description": "Deletes a workspace by its slug.",
+        "operationId": "deleteWorkspace",
         "parameters": [
           {
             "name": "slug",
@@ -1983,6 +2077,7 @@
           "Workspaces"
         ],
         "description": "Update workspace settings by its unique slug.",
+        "operationId": "updateWorkspace",
         "parameters": [
           {
             "name": "slug",
@@ -2063,6 +2158,7 @@
           "Workspaces"
         ],
         "description": "Get a workspaces chats regardless of user by its unique slug.",
+        "operationId": "getWorkspaceChats",
         "parameters": [
           {
             "name": "slug",
@@ -2160,6 +2256,7 @@
           "Workspaces"
         ],
         "description": "Add or remove documents from a workspace by its unique slug.",
+        "operationId": "updateWorkspaceEmbeddings",
         "parameters": [
           {
             "name": "slug",
@@ -2242,6 +2339,7 @@
           "Workspaces"
         ],
         "description": "Add or remove pin from a document in a workspace by its unique slug.",
+        "operationId": "updateWorkspacePin",
         "parameters": [
           {
             "name": "slug",
@@ -2297,6 +2395,7 @@
           "Workspaces"
         ],
         "description": "Execute a chat with a workspace",
+        "operationId": "chatWithWorkspace",
         "parameters": [
           {
             "name": "slug",
@@ -2387,6 +2486,7 @@
           "Workspaces"
         ],
         "description": "Execute a streamable chat with a workspace",
+        "operationId": "streamChatWithWorkspace",
         "parameters": [
           {
             "name": "slug",
@@ -2495,6 +2595,7 @@
           "Workspaces"
         ],
         "description": "Perform a vector similarity search in a workspace",
+        "operationId": "vectorSearchWorkspace",
         "parameters": [
           {
             "name": "slug",
@@ -2569,6 +2670,7 @@
           "Workspace Hierarchy"
         ],
         "description": "Get the full workspace tree showing all workspaces and their nested sub-workspaces.",
+        "operationId": "getWorkspaceTree",
         "parameters": [],
         "responses": {
           "200": {
@@ -2627,6 +2729,7 @@
           "Workspace Hierarchy"
         ],
         "description": "Get the subtree rooted at a specific workspace.",
+        "operationId": "getWorkspaceSubtree",
         "parameters": [
           {
             "name": "slug",
@@ -2698,6 +2801,7 @@
           "Workspace Hierarchy"
         ],
         "description": "Get the direct children of a workspace.",
+        "operationId": "getWorkspaceChildren",
         "parameters": [
           {
             "name": "slug",
@@ -2760,6 +2864,7 @@
           "Workspace Hierarchy"
         ],
         "description": "Get the breadcrumb (ancestor chain) for a workspace, including itself.",
+        "operationId": "getWorkspaceBreadcrumbs",
         "parameters": [
           {
             "name": "slug",
@@ -2826,6 +2931,7 @@
           "System Settings"
         ],
         "description": "Dump all settings to file storage",
+        "operationId": "exportEnvironment",
         "parameters": [],
         "responses": {
           "200": {
@@ -2858,6 +2964,7 @@
           "System Settings"
         ],
         "description": "Get all current system settings that are defined.",
+        "operationId": "getSystemSettings",
         "parameters": [],
         "responses": {
           "200": {
@@ -2906,6 +3013,7 @@
           "System Settings"
         ],
         "description": "Number of all vectors in connected vector database",
+        "operationId": "getVectorCount",
         "parameters": [],
         "responses": {
           "200": {
@@ -2948,6 +3056,7 @@
           "System Settings"
         ],
         "description": "Update a system setting or preference.",
+        "operationId": "updateSystemSettings",
         "parameters": [],
         "responses": {
           "200": {
@@ -3005,6 +3114,7 @@
           "System Settings"
         ],
         "description": "Export all of the chats from the system in a known format. Output depends on the type sent. Will be send with the correct header for the output.",
+        "operationId": "exportChats",
         "parameters": [
           {
             "name": "type",
@@ -3064,6 +3174,7 @@
           "System Settings"
         ],
         "description": "Permanently remove documents from the system.",
+        "operationId": "removeDocuments",
         "parameters": [],
         "responses": {
           "200": {
@@ -3129,6 +3240,7 @@
           "Workspace Threads"
         ],
         "description": "Create a new workspace thread",
+        "operationId": "createThread",
         "parameters": [
           {
             "name": "slug",
@@ -3204,6 +3316,7 @@
           "Workspace Threads"
         ],
         "description": "Update thread name by its unique slug.",
+        "operationId": "updateThread",
         "parameters": [
           {
             "name": "slug",
@@ -3286,6 +3399,7 @@
           "Workspace Threads"
         ],
         "description": "Delete a workspace thread",
+        "operationId": "deleteThread",
         "parameters": [
           {
             "name": "slug",
@@ -3340,6 +3454,7 @@
           "Workspace Threads"
         ],
         "description": "Get chats for a workspace thread",
+        "operationId": "getThreadChats",
         "parameters": [
           {
             "name": "slug",
@@ -3419,6 +3534,7 @@
           "Workspace Threads"
         ],
         "description": "Chat with a workspace thread",
+        "operationId": "chatWithThread",
         "parameters": [
           {
             "name": "slug",
@@ -3514,6 +3630,7 @@
           "Workspace Threads"
         ],
         "description": "Stream chat with a workspace thread",
+        "operationId": "streamChatWithThread",
         "parameters": [
           {
             "name": "slug",
@@ -3632,6 +3749,7 @@
           "User Management"
         ],
         "description": "List all users",
+        "operationId": "getUserManagementList",
         "parameters": [],
         "responses": {
           "200": {
@@ -3688,6 +3806,7 @@
           "User Management"
         ],
         "description": "Issue a temporary auth token for a user",
+        "operationId": "issueAuthToken",
         "parameters": [
           {
             "name": "id",
@@ -3747,6 +3866,7 @@
           "OpenAI Compatible Endpoints"
         ],
         "description": "Get all available \"models\" which are workspaces you can use for chatting.",
+        "operationId": "openaiListModels",
         "parameters": [],
         "responses": {
           "200": {
@@ -3803,6 +3923,7 @@
           "OpenAI Compatible Endpoints"
         ],
         "description": "Execute a chat with a workspace with OpenAI compatibility. Supports streaming as well. Model must be a workspace slug from /models.",
+        "operationId": "openaiChatCompletions",
         "parameters": [],
         "responses": {
           "200": {
@@ -3872,6 +3993,7 @@
           "OpenAI Compatible Endpoints"
         ],
         "description": "Get the embeddings of any arbitrary text string. This will use the embedder provider set in the system. Please ensure the token length of each string fits within the context of your embedder model.",
+        "operationId": "openaiCreateEmbeddings",
         "parameters": [],
         "responses": {
           "200": {
@@ -3919,6 +4041,7 @@
           "OpenAI Compatible Endpoints"
         ],
         "description": "List all the vector database collections connected to AnythingLLM. These are essentially workspaces but return their unique vector db identifier - this is the same as the workspace slug.",
+        "operationId": "openaiListVectorStores",
         "parameters": [],
         "responses": {
           "200": {
@@ -3971,6 +4094,7 @@
           "Embed"
         ],
         "description": "List all active embeds",
+        "operationId": "listEmbeds",
         "parameters": [],
         "responses": {
           "200": {
@@ -4038,6 +4162,7 @@
           "Embed"
         ],
         "description": "Get all chats for a specific embed",
+        "operationId": "getEmbedChats",
         "parameters": [
           {
             "name": "embedUuid",
@@ -4108,6 +4233,7 @@
           "Embed"
         ],
         "description": "Get chats for a specific embed and session",
+        "operationId": "getEmbedSessionChats",
         "parameters": [
           {
             "name": "embedUuid",
@@ -4179,6 +4305,7 @@
           "Embed"
         ],
         "description": "Create a new embed configuration",
+        "operationId": "createEmbed",
         "parameters": [],
         "responses": {
           "200": {
@@ -4266,6 +4393,7 @@
           "Embed"
         ],
         "description": "Update an existing embed configuration",
+        "operationId": "updateEmbed",
         "parameters": [
           {
             "name": "embedUuid",
@@ -4343,6 +4471,7 @@
           "Embed"
         ],
         "description": "Delete an existing embed configuration",
+        "operationId": "deleteEmbed",
         "parameters": [
           {
             "name": "embedUuid",
