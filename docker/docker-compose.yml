@@ -31,6 +31,8 @@ services:
       - anything-llm
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    depends_on:
+      - postgres
 
   postgres:
         image: postgres:18-alpine
@@ -42,6 +44,8 @@ services:
             - POSTGRES_PASSWORD=postgres
             - POSTGRES_DB=anythingllm
             - POSTGRES_USER=postgres
+        networks:
+            - anything-llm
 
 volumes:
   storage:

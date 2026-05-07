@@ -156,18 +156,21 @@ WORKDIR /app
 # Install server layer
 # Also pull and build collector deps (chromium issues prevent bad bindings)
 FROM build AS backend-build
-COPY --chown=anythingllm:anythingllm ./server /app/server/
+
 WORKDIR /app/server
+COPY ./server/package.json ./server/yarn.lock ./
 RUN yarn install --production --network-timeout 100000 && yarn cache clean
 WORKDIR /app
 
 # Install collector dependencies
-COPY --chown=anythingllm:anythingllm ./collector/ ./collector/
 WORKDIR /app/collector
+COPY ./collector/package.json ./collector/yarn.lock ./
 ENV PUPPETEER_DOWNLOAD_BASE_URL=https://storage.googleapis.com/chrome-for-testing-public
 RUN yarn install --production --network-timeout 100000 && yarn cache clean
 
 WORKDIR /app
+COPY --chown=anythingllm:anythingllm ./server ./server/
+COPY --chown=anythingllm:anythingllm ./collector/ ./collector/
 USER anythingllm
 
 # Since we are building from backend-build we just need to move built frontend into server/public

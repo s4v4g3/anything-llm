@@ -1717,6 +1717,44 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "properties": {
+                    "workspace": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "openAiTemp": {
+                          "type": "number",
+                          "nullable": true
+                        },
+                        "lastUpdatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "openAiHistory": {
+                          "type": "integer"
+                        },
+                        "openAiPrompt": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
                   "example": {
                     "workspace": {
                       "id": 79,
@@ -1763,6 +1801,7 @@
             "application/json": {
               "example": {
                 "name": "My New Workspace",
+                "parentWorkspaceId": null,
                 "similarityThreshold": 0.7,
                 "openAiTemp": 0.7,
                 "openAiHistory": 20,
@@ -2520,6 +2559,263 @@
                 "scoreThreshold": 0.75
               }
             }
+          }
+        }
+      }
+    },
+    "/v1/workspaces/tree": {
+      "get": {
+        "tags": [
+          "Workspace Hierarchy"
+        ],
+        "description": "Get the full workspace tree showing all workspaces and their nested sub-workspaces.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "tree": [
+                      {
+                        "id": 1,
+                        "name": "Research",
+                        "slug": "research-abc123",
+                        "depth": 0,
+                        "children": [
+                          {
+                            "id": 2,
+                            "name": "Papers",
+                            "slug": "papers-def456",
+                            "depth": 1,
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidAPIKey"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidAPIKey"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/v1/workspace/{slug}/tree": {
+      "get": {
+        "tags": [
+          "Workspace Hierarchy"
+        ],
+        "description": "Get the subtree rooted at a specific workspace.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Unique slug of the workspace to get the subtree for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "tree": [
+                      {
+                        "id": 2,
+                        "name": "Papers",
+                        "slug": "papers-def456",
+                        "depth": 1,
+                        "children": [
+                          {
+                            "id": 3,
+                            "name": "ML",
+                            "slug": "ml-ghi789",
+                            "depth": 2,
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidAPIKey"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidAPIKey"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workspace not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/v1/workspace/{slug}/children": {
+      "get": {
+        "tags": [
+          "Workspace Hierarchy"
+        ],
+        "description": "Get the direct children of a workspace.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Unique slug of the workspace to get children for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "children": [
+                      {
+                        "id": 2,
+                        "name": "Papers",
+                        "slug": "papers-def456",
+                        "depth": 1
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidAPIKey"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidAPIKey"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workspace not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/v1/workspace/{slug}/breadcrumbs": {
+      "get": {
+        "tags": [
+          "Workspace Hierarchy"
+        ],
+        "description": "Get the breadcrumb (ancestor chain) for a workspace, including itself.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Unique slug of the workspace to get breadcrumbs for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "breadcrumbs": [
+                      {
+                        "id": 1,
+                        "name": "Research",
+                        "slug": "research-abc123"
+                      },
+                      {
+                        "id": 2,
+                        "name": "Papers",
+                        "slug": "papers-def456"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidAPIKey"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidAPIKey"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workspace not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }

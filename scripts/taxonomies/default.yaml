@@ -1,0 +1,198 @@
+id: default
+name: Default Taxonomy
+description: A comprehensive, general-purpose taxonomy suitable for organizing all areas of life
+hierarchy:
+  - name: Travel
+    description: Anything involving going somewhere
+    children:
+      - name: Personal
+        description: Personal travel
+      - name: Trips
+        description: Detailed travel plans and schedules
+      - name: Lodging
+        description: Reservations and accommodation details
+      - name: Transportation
+        description: Travel arrangements and transportation methods
+      - name: Documents
+        description: Passport, visas, TSA PreCheck, and travel documents
+      - name: Business
+        description: Business-related travel
+      - name: Expenses
+        description: Travel expenses and receipts
+      - name: Policies
+        description: Travel policies and guidelines
+      - name: Planning
+        description: Travel planning and preparation
+      - name: Past Travel
+        description: Completed trips and archived travel information
+        children:
+          - name: By Year
+            description: Past travel organized by year
+
+  - name: Personal Finance
+    description: Money, accounts, obligations, and planning
+    children:
+      - name: Banking
+        description: Bank accounts and banking information
+      - name: Credit Cards
+        description: Credit card accounts and statements
+      - name: Investments
+        description: Investment accounts and portfolio
+      - name: Retirement
+        description: Retirement accounts and planning
+      - name: Taxes
+        description: Tax documents and filing information
+      - name: Insurance
+        description: Insurance policies and coverage
+      - name: Budgeting
+        description: Budget planning and tracking
+      - name: Receipts
+        description: Purchase receipts and invoices
+      - name: Net Worth
+        description: Net worth statements and financial summaries
+
+  - name: Health Care
+    description: Body, mind, and medical administration
+    children:
+      - name: Medical
+        description: General medical information
+      - name: Doctors
+        description: Doctor profiles and contact information
+      - name: Appointments
+        description: Medical appointments and schedules
+      - name: Records
+        description: Medical records and test results
+      - name: Dental
+        description: Dental care and appointments
+      - name: Vision
+        description: Vision care and prescriptions
+      - name: Mental Health
+        description: Mental health and therapy
+      - name: Prescriptions
+        description: Medications and prescriptions
+      - name: Insurance
+        description: Health insurance information
+      - name: Fitness
+        description: Fitness and wellness tracking
+
+  - name: Food
+    description: This is underrated but very useful
+    children:
+      - name: Restaurants
+        description: Restaurant recommendations and reservations
+      - name: Recipes
+        description: Recipes and cooking ideas
+      - name: Meal Planning
+        description: Meal plans and menus
+      - name: Grocery Lists
+        description: Shopping lists and grocery items
+      - name: Wine
+        description: Wine and spirits collection
+      - name: Dietary Notes
+        description: Dietary preferences and restrictions
+
+  - name: Entertainment
+    description: Leisure, fun, and culture
+    children:
+      - name: Movies
+        description: Movies to watch and reviews
+      - name: TV
+        description: Television shows and series
+      - name: Music
+        description: Music and playlists
+      - name: Books
+        description: Books to read and reviews
+      - name: Games
+        description: Games and gaming
+      - name: Events
+        description: Events and concerts
+      - name: Subscriptions
+        description: Entertainment subscriptions
+
+  - name: Property
+    description: Things you own or rent
+    children:
+      - name: Home
+        description: Home and residence information
+      - name: Mortgage
+        description: Mortgage or lease information
+      - name: Maintenance
+        description: Home maintenance and repairs
+      - name: Improvements
+        description: Home improvements and upgrades
+      - name: Utilities
+        description: Utility accounts and bills
+      - name: Vehicles
+        description: Vehicle information
+      - name: Registration
+        description: Vehicle registration and documentation
+      - name: Insurance
+        description: Property and vehicle insurance
+      - name: Other Assets
+        description: Storage units, land, and other assets
+
+  - name: Work / Business
+    description: Even if you're not a business owner, this helps separate mental contexts
+    children:
+      - name: Employer
+        description: Employer information and HR documents
+      - name: Projects
+        description: Work projects and assignments
+      - name: Contracts
+        description: Work contracts and agreements
+      - name: Expenses
+        description: Business expenses and reimbursements
+      - name: Policies
+        description: Company policies and procedures
+      - name: Career Development
+        description: Professional development and training
+
+  - name: Personal Life
+    description: The catch-all that isn't actually a junk drawer
+    children:
+      - name: Identity
+        description: Identity documents and information
+      - name: ID Documents
+        description: Driver's license, passport, and identification
+      - name: Legal Name
+        description: Legal name, SSN, and official records
+      - name: Legal
+        description: Legal matters and documents
+      - name: Estate Planning
+        description: Will, trust, and estate planning
+      - name: Contracts
+        description: Personal contracts and agreements
+      - name: Relationships
+        description: Personal relationships and contacts
+      - name: Important Dates
+        description: Birthdays, anniversaries, and important dates
+      - name: Life Admin
+        description: General life administration
+
+  - name: Reference / Knowledge
+    description: Non-actionable, long-term information
+    children:
+      - name: How-Tos
+        description: How-to guides and tutorials
+      - name: Notes
+        description: Reference notes and information
+      - name: Research
+        description: Research materials and findings
+      - name: Manuals
+        description: Product manuals and instructions
+      - name: Learning
+        description: Educational materials and courses
+
+  - name: Archive
+    description: Where completed life goes to rest
+    children:
+      - name: By Year
+        description: Archive organized by year
+      - name: Travel Archive
+        description: Past travel information
+      - name: Finance Archive
+        description: Historical financial records
+      - name: Work Archive
+        description: Completed projects and work history
+      - name: Other Archive
+        description: Other archived materials
