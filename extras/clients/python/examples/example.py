@@ -34,9 +34,10 @@ def main():
     )
     print(ws_response)
     get_ws_response = workspace_api.update_workspace(
-        ws_response.workspace.slug, UpdateWorkspaceRequest(name="Foopy")
+        ws_response.workspace.slug, UpdateWorkspaceRequest(name="New Name", description="New Description")
     )
     print(get_ws_response)
+    assert get_ws_response.workspace.description == "New Description"
     workspace_api.delete_workspace(ws_response.workspace.slug)
 
 

@@ -27,6 +27,7 @@ class TestUpdateWorkspaceRequest:
         if include_optional:
             return UpdateWorkspaceRequest(
                 name="string",
+                description="A workspace for research documents",
                 open_ai_temp=0.7,
                 open_ai_history=0,
                 last_updated_at="2024-01-01T00:00:00.000Z",

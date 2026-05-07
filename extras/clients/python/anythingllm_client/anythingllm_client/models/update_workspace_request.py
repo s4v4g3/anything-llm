@@ -45,6 +45,7 @@ class UpdateWorkspaceRequest(BaseModel):
     """
 
     name: StrictStr | None = None
+    description: StrictStr | None = None
     open_ai_temp: StrictFloat | StrictInt | None = Field(
         default=None, alias="openAiTemp"
     )
@@ -74,6 +75,7 @@ class UpdateWorkspaceRequest(BaseModel):
     )
     __properties = [
         "name",
+        "description",
         "openAiTemp",
         "openAiHistory",
         "lastUpdatedAt",
@@ -135,6 +137,11 @@ class UpdateWorkspaceRequest(BaseModel):
     def to_dict(self):
         """Returns the dictionary representation of the model using alias"""
         _dict = self.dict(by_alias=True, exclude={}, exclude_none=True)
+        # set to None if description (nullable) is None
+        # and __fields_set__ contains the field
+        if self.description is None and "description" in self.__fields_set__:
+            _dict["description"] = None
+
         # set to None if open_ai_temp (nullable) is None
         # and __fields_set__ contains the field
         if self.open_ai_temp is None and "open_ai_temp" in self.__fields_set__:
@@ -239,6 +246,7 @@ class UpdateWorkspaceRequest(BaseModel):
         _obj = UpdateWorkspaceRequest.parse_obj(
             {
                 "name": obj.get("name"),
+                "description": obj.get("description"),
                 "open_ai_temp": obj.get("openAiTemp"),
                 "open_ai_history": obj.get("openAiHistory"),
                 "last_updated_at": obj.get("lastUpdatedAt"),

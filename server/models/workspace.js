@@ -40,6 +40,7 @@ const Workspace = {
   // commented fields are not writable, but are available on the db object
   writable: [
     "name",
+    "description",
     // "slug",
     // "vectorTag",
     "openAiTemp",

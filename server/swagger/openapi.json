@@ -4406,6 +4406,11 @@
             "type": "string",
             "example": "string"
           },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "A workspace for research documents"
+          },
           "slug": {
             "type": "string",
             "example": "string"
@@ -4510,9 +4515,29 @@
         "required": [
           "id",
           "name",
+          "description",
           "slug",
           "createdAt",
-          "lastUpdatedAt"
+          "lastUpdatedAt",
+          "path",
+          "depth",
+          "includeChildDocs",
+          "includeAncestorDocs",
+          "parentWorkspaceId",
+          "vectorSearchMode",
+          "queryRefusalResponse",
+          "agentModel",
+          "agentProvider",
+          "chatMode",
+          "topN",
+          "chatModel",
+          "chatProvider",
+          "similarityThreshold",
+          "openAiPrompt",
+          "openAiHistory",
+          "openAiTemp",
+          "vectorTag",
+          "pfpFilename"
         ]
       },
       "CreateWorkspaceResponse": {
@@ -4610,6 +4635,11 @@
             "type": "string",
             "example": "My New Workspace"
           },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "A workspace for research documents"
+          },
           "parentWorkspaceId": {
             "type": "string",
             "nullable": true,
@@ -4659,6 +4689,11 @@
           "name": {
             "type": "string",
             "example": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "A workspace for research documents"
           },
           "openAiTemp": {
             "type": "number",

@@ -26,6 +26,7 @@ class TestWorkspace:
             return Workspace(
                 id=1,
                 name="string",
+                description="A workspace for research documents",
                 slug="string",
                 vector_tag="string",
                 created_at="2024-01-01T00:00:00.000Z",
@@ -53,9 +54,29 @@ class TestWorkspace:
             return Workspace(
                 id=1,
                 name="string",
+                description="A workspace for research documents",
                 slug="string",
+                vector_tag="string",
                 created_at="2024-01-01T00:00:00.000Z",
+                open_ai_temp=0.7,
+                open_ai_history=0,
                 last_updated_at="2024-01-01T00:00:00.000Z",
+                open_ai_prompt="string",
+                similarity_threshold=0.7,
+                chat_provider="",
+                chat_model="",
+                top_n=1.337,
+                chat_mode="chat",
+                pfp_filename="",
+                agent_provider="",
+                agent_model="gpt-4",
+                query_refusal_response="string",
+                vector_search_mode="default",
+                parent_workspace_id=1,
+                path="",
+                depth=1.337,
+                include_child_docs=False,
+                include_ancestor_docs=False,
             )
 
     def testWorkspace(self):

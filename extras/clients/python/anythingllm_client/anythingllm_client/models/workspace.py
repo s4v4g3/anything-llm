@@ -46,45 +46,41 @@ class Workspace(BaseModel):
 
     id: StrictInt = Field(...)
     name: StrictStr = Field(...)
+    description: StrictStr | None = Field(...)
     slug: StrictStr = Field(...)
-    vector_tag: StrictStr | None = Field(default=None, alias="vectorTag")
+    vector_tag: StrictStr | None = Field(default=..., alias="vectorTag")
     created_at: StrictStr = Field(default=..., alias="createdAt")
     open_ai_temp: StrictFloat | StrictInt | None = Field(
-        default=None, alias="openAiTemp"
+        default=..., alias="openAiTemp"
     )
-    open_ai_history: StrictFloat | StrictInt | None = Field(
-        default=None, alias="openAiHistory"
-    )
+    open_ai_history: StrictFloat | StrictInt = Field(default=..., alias="openAiHistory")
     last_updated_at: StrictStr = Field(default=..., alias="lastUpdatedAt")
-    open_ai_prompt: StrictStr | None = Field(default=None, alias="openAiPrompt")
+    open_ai_prompt: StrictStr = Field(default=..., alias="openAiPrompt")
     similarity_threshold: StrictFloat | StrictInt | None = Field(
-        default=None, alias="similarityThreshold"
+        default=..., alias="similarityThreshold"
     )
-    chat_provider: StrictStr | None = Field(default=None, alias="chatProvider")
-    chat_model: StrictStr | None = Field(default=None, alias="chatModel")
-    top_n: StrictFloat | StrictInt | None = Field(default=None, alias="topN")
-    chat_mode: StrictStr | None = Field(default=None, alias="chatMode")
-    pfp_filename: StrictStr | None = Field(default=None, alias="pfpFilename")
-    agent_provider: StrictStr | None = Field(default=None, alias="agentProvider")
-    agent_model: StrictStr | None = Field(default=None, alias="agentModel")
+    chat_provider: StrictStr | None = Field(default=..., alias="chatProvider")
+    chat_model: StrictStr | None = Field(default=..., alias="chatModel")
+    top_n: StrictFloat | StrictInt | None = Field(default=..., alias="topN")
+    chat_mode: StrictStr | None = Field(default=..., alias="chatMode")
+    pfp_filename: StrictStr | None = Field(default=..., alias="pfpFilename")
+    agent_provider: StrictStr | None = Field(default=..., alias="agentProvider")
+    agent_model: StrictStr | None = Field(default=..., alias="agentModel")
     query_refusal_response: StrictStr | None = Field(
-        default=None, alias="queryRefusalResponse"
+        default=..., alias="queryRefusalResponse"
     )
-    vector_search_mode: StrictStr | None = Field(default=None, alias="vectorSearchMode")
+    vector_search_mode: StrictStr = Field(default=..., alias="vectorSearchMode")
     parent_workspace_id: StrictInt | None = Field(
-        default=None, alias="parentWorkspaceId"
+        default=..., alias="parentWorkspaceId"
     )
-    path: StrictStr | None = None
-    depth: StrictFloat | StrictInt | None = None
-    include_child_docs: StrictBool | None = Field(
-        default=None, alias="includeChildDocs"
-    )
-    include_ancestor_docs: StrictBool | None = Field(
-        default=None, alias="includeAncestorDocs"
-    )
+    path: StrictStr = Field(...)
+    depth: StrictFloat | StrictInt = Field(...)
+    include_child_docs: StrictBool = Field(default=..., alias="includeChildDocs")
+    include_ancestor_docs: StrictBool = Field(default=..., alias="includeAncestorDocs")
     __properties = [
         "id",
         "name",
+        "description",
         "slug",
         "vectorTag",
         "createdAt",
@@ -124,9 +120,6 @@ class Workspace(BaseModel):
     @validator("vector_search_mode")
     def vector_search_mode_validate_enum(cls, value):
         """Validates the enum"""
-        if value is None:
-            return value
-
         if value not in ("default", "rerank"):
             raise ValueError("must be one of enum values ('default', 'rerank')")
         return value
@@ -153,6 +146,11 @@ class Workspace(BaseModel):
     def to_dict(self):
         """Returns the dictionary representation of the model using alias"""
         _dict = self.dict(by_alias=True, exclude={}, exclude_none=True)
+        # set to None if description (nullable) is None
+        # and __fields_set__ contains the field
+        if self.description is None and "description" in self.__fields_set__:
+            _dict["description"] = None
+
         # set to None if vector_tag (nullable) is None
         # and __fields_set__ contains the field
         if self.vector_tag is None and "vector_tag" in self.__fields_set__:
@@ -237,6 +235,7 @@ class Workspace(BaseModel):
             {
                 "id": obj.get("id"),
                 "name": obj.get("name"),
+                "description": obj.get("description"),
                 "slug": obj.get("slug"),
                 "vector_tag": obj.get("vectorTag"),
                 "created_at": obj.get("createdAt"),

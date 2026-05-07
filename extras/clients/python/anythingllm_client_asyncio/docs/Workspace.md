@@ -6,28 +6,29 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **int** |  | 
 **name** | **str** |  | 
+**description** | **str** |  | 
 **slug** | **str** |  | 
-**vector_tag** | **str** |  | [optional] 
+**vector_tag** | **str** |  | 
 **created_at** | **str** |  | 
-**open_ai_temp** | **float** |  | [optional] 
-**open_ai_history** | **float** |  | [optional] 
+**open_ai_temp** | **float** |  | 
+**open_ai_history** | **float** |  | 
 **last_updated_at** | **str** |  | 
-**open_ai_prompt** | **str** |  | [optional] 
-**similarity_threshold** | **float** |  | [optional] 
-**chat_provider** | **str** |  | [optional] 
-**chat_model** | **str** |  | [optional] 
-**top_n** | **float** |  | [optional] 
-**chat_mode** | **str** |  | [optional] 
-**pfp_filename** | **str** |  | [optional] 
-**agent_provider** | **str** |  | [optional] 
-**agent_model** | **str** |  | [optional] 
-**query_refusal_response** | **str** |  | [optional] 
-**vector_search_mode** | **str** |  | [optional] 
-**parent_workspace_id** | **int** |  | [optional] 
-**path** | **str** |  | [optional] 
-**depth** | **float** |  | [optional] 
-**include_child_docs** | **bool** |  | [optional] 
-**include_ancestor_docs** | **bool** |  | [optional] 
+**open_ai_prompt** | **str** |  | 
+**similarity_threshold** | **float** |  | 
+**chat_provider** | **str** |  | 
+**chat_model** | **str** |  | 
+**top_n** | **float** |  | 
+**chat_mode** | **str** |  | 
+**pfp_filename** | **str** |  | 
+**agent_provider** | **str** |  | 
+**agent_model** | **str** |  | 
+**query_refusal_response** | **str** |  | 
+**vector_search_mode** | **str** |  | 
+**parent_workspace_id** | **int** |  | 
+**path** | **str** |  | 
+**depth** | **float** |  | 
+**include_child_docs** | **bool** |  | 
+**include_ancestor_docs** | **bool** |  | 
 
 ## Example
 

@@ -27,6 +27,7 @@ class TestCreateWorkspaceRequest:
         if include_optional:
             return CreateWorkspaceRequest(
                 name="My New Workspace",
+                description="A workspace for research documents",
                 parent_workspace_id="",
                 similarity_threshold=1.337,
                 open_ai_temp=1.337,

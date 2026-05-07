@@ -5,6 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **name** | **str** |  | 
+**description** | **str** |  | [optional] 
 **parent_workspace_id** | **str** |  | [optional] 
 **similarity_threshold** | **float** |  | [optional] 
 **open_ai_temp** | **float** |  | [optional] 

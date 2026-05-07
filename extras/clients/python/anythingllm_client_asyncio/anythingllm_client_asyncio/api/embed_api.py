@@ -689,7 +689,8 @@ class EmbedApi:
         for _key, _val in _params["kwargs"].items():
             if _key not in _all_params:
                 raise ApiTypeError(
-                    f"Got an unexpected keyword argument '{_key}' to method list_embeds"
+                    f"Got an unexpected keyword argument '{_key}'"
+                    " to method list_embeds"
                 )
             _params[_key] = _val
         del _params["kwargs"]

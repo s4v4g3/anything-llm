@@ -36,6 +36,7 @@ class CreateWorkspaceRequest(BaseModel):
     """
 
     name: StrictStr = Field(...)
+    description: StrictStr | None = None
     parent_workspace_id: StrictStr | None = Field(
         default=None, alias="parentWorkspaceId"
     )
@@ -56,6 +57,7 @@ class CreateWorkspaceRequest(BaseModel):
     top_n: StrictFloat | StrictInt | None = Field(default=None, alias="topN")
     __properties = [
         "name",
+        "description",
         "parentWorkspaceId",
         "similarityThreshold",
         "openAiTemp",
@@ -100,6 +102,11 @@ class CreateWorkspaceRequest(BaseModel):
     def to_dict(self):
         """Returns the dictionary representation of the model using alias"""
         _dict = self.dict(by_alias=True, exclude={}, exclude_none=True)
+        # set to None if description (nullable) is None
+        # and __fields_set__ contains the field
+        if self.description is None and "description" in self.__fields_set__:
+            _dict["description"] = None
+
         # set to None if parent_workspace_id (nullable) is None
         # and __fields_set__ contains the field
         if (
@@ -163,6 +170,7 @@ class CreateWorkspaceRequest(BaseModel):
         _obj = CreateWorkspaceRequest.parse_obj(
             {
                 "name": obj.get("name"),
+                "description": obj.get("description"),
                 "parent_workspace_id": obj.get("parentWorkspaceId"),
                 "similarity_threshold": obj.get("similarityThreshold"),
                 "open_ai_temp": obj.get("openAiTemp"),

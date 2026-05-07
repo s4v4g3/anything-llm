@@ -5,6 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **name** | **str** |  | [optional] 
+**description** | **str** |  | [optional] 
 **open_ai_temp** | **float** |  | [optional] 
 **open_ai_history** | **float** |  | [optional] 
 **last_updated_at** | **str** |  | [optional] 

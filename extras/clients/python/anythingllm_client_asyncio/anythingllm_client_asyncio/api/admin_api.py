@@ -240,7 +240,8 @@ class AdminApi:
         for _key, _val in _params["kwargs"].items():
             if _key not in _all_params:
                 raise ApiTypeError(
-                    f"Got an unexpected keyword argument '{_key}' to method create_user"
+                    f"Got an unexpected keyword argument '{_key}'"
+                    " to method create_user"
                 )
             _params[_key] = _val
         del _params["kwargs"]
@@ -524,7 +525,8 @@ class AdminApi:
         for _key, _val in _params["kwargs"].items():
             if _key not in _all_params:
                 raise ApiTypeError(
-                    f"Got an unexpected keyword argument '{_key}' to method delete_user"
+                    f"Got an unexpected keyword argument '{_key}'"
+                    " to method delete_user"
                 )
             _params[_key] = _val
         del _params["kwargs"]
@@ -1025,7 +1027,8 @@ class AdminApi:
         for _key, _val in _params["kwargs"].items():
             if _key not in _all_params:
                 raise ApiTypeError(
-                    f"Got an unexpected keyword argument '{_key}' to method list_users"
+                    f"Got an unexpected keyword argument '{_key}'"
+                    " to method list_users"
                 )
             _params[_key] = _val
         del _params["kwargs"]
@@ -1568,7 +1571,8 @@ class AdminApi:
         for _key, _val in _params["kwargs"].items():
             if _key not in _all_params:
                 raise ApiTypeError(
-                    f"Got an unexpected keyword argument '{_key}' to method update_user"
+                    f"Got an unexpected keyword argument '{_key}'"
+                    " to method update_user"
                 )
             _params[_key] = _val
         del _params["kwargs"]

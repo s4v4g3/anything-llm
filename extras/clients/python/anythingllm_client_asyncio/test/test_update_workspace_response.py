@@ -31,6 +31,7 @@ class TestUpdateWorkspaceResponse:
                 workspace=anythingllm_client_asyncio.models.workspace.Workspace(
                     id=1,
                     name="string",
+                    description="A workspace for research documents",
                     slug="string",
                     vector_tag="string",
                     created_at="2024-01-01T00:00:00.000Z",
@@ -60,6 +61,7 @@ class TestUpdateWorkspaceResponse:
                 workspace=anythingllm_client_asyncio.models.workspace.Workspace(
                     id=1,
                     name="string",
+                    description="A workspace for research documents",
                     slug="string",
                     vector_tag="string",
                     created_at="2024-01-01T00:00:00.000Z",

@@ -122,7 +122,8 @@ class AuthenticationApi:
         for _key, _val in _params["kwargs"].items():
             if _key not in _all_params:
                 raise ApiTypeError(
-                    f"Got an unexpected keyword argument '{_key}' to method verify_auth"
+                    f"Got an unexpected keyword argument '{_key}'"
+                    " to method verify_auth"
                 )
             _params[_key] = _val
         del _params["kwargs"]
