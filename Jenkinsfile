@@ -13,11 +13,15 @@ pipeline {
         disableConcurrentBuilds()
         timeout(time: 65, unit: 'MINUTES')
     }
+    parameters {
+      booleanParam 'FORCE_DOCKER_IMAGE_BUILD'
+    }
     stages {
         stage('Image Build') {
             when {
                 anyOf {
                     branch 'devmain'
+                    expression { return params.FORCE_DOCKER_IMAGE_BUILD }
                 }
                 beforeAgent true
             }
