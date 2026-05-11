@@ -55,9 +55,4 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            updateHomeAssistantAlertEntity currentBuild.result
-        }
-    }
 }
