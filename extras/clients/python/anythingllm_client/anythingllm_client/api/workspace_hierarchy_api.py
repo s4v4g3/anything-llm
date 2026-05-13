@@ -28,6 +28,12 @@ from anythingllm_client.exceptions import (  # noqa: F401
     ApiTypeError,
     ApiValueError,
 )
+from anythingllm_client.models.get_workspace_children_response import (
+    GetWorkspaceChildrenResponse,
+)
+from anythingllm_client.models.get_workspace_tree_response import (
+    GetWorkspaceTreeResponse,
+)
 
 
 class WorkspaceHierarchyApi:
@@ -211,7 +217,7 @@ class WorkspaceHierarchyApi:
             Field(..., description="Unique slug of the workspace to get children for"),
         ],
         **kwargs,
-    ) -> object:  # noqa: E501
+    ) -> GetWorkspaceChildrenResponse:  # noqa: E501
         """get_workspace_children  # noqa: E501
 
         Get the direct children of a workspace.  # noqa: E501
@@ -232,7 +238,7 @@ class WorkspaceHierarchyApi:
         :return: Returns the result object.
                  If the method is called asynchronously,
                  returns the request thread.
-        :rtype: object
+        :rtype: GetWorkspaceChildrenResponse
         """
         kwargs["_return_http_data_only"] = True
         if "_preload_content" in kwargs:
@@ -282,7 +288,7 @@ class WorkspaceHierarchyApi:
         :return: Returns the result object.
                  If the method is called asynchronously,
                  returns the request thread.
-        :rtype: tuple(object, status_code(int), headers(HTTPHeaderDict))
+        :rtype: tuple(GetWorkspaceChildrenResponse, status_code(int), headers(HTTPHeaderDict))
         """
 
         _params = locals()
@@ -335,7 +341,7 @@ class WorkspaceHierarchyApi:
         _auth_settings = ["BearerAuth"]  # noqa: E501
 
         _response_types_map = {
-            "200": "object",
+            "200": "GetWorkspaceChildrenResponse",
             "403": "InvalidAPIKey",
             "404": None,
             "500": None,
@@ -370,7 +376,7 @@ class WorkspaceHierarchyApi:
             ),
         ],
         **kwargs,
-    ) -> object:  # noqa: E501
+    ) -> GetWorkspaceTreeResponse:  # noqa: E501
         """get_workspace_subtree  # noqa: E501
 
         Get the subtree rooted at a specific workspace.  # noqa: E501
@@ -391,7 +397,7 @@ class WorkspaceHierarchyApi:
         :return: Returns the result object.
                  If the method is called asynchronously,
                  returns the request thread.
-        :rtype: object
+        :rtype: GetWorkspaceTreeResponse
         """
         kwargs["_return_http_data_only"] = True
         if "_preload_content" in kwargs:
@@ -443,7 +449,7 @@ class WorkspaceHierarchyApi:
         :return: Returns the result object.
                  If the method is called asynchronously,
                  returns the request thread.
-        :rtype: tuple(object, status_code(int), headers(HTTPHeaderDict))
+        :rtype: tuple(GetWorkspaceTreeResponse, status_code(int), headers(HTTPHeaderDict))
         """
 
         _params = locals()
@@ -496,7 +502,7 @@ class WorkspaceHierarchyApi:
         _auth_settings = ["BearerAuth"]  # noqa: E501
 
         _response_types_map = {
-            "200": "object",
+            "200": "GetWorkspaceTreeResponse",
             "403": "InvalidAPIKey",
             "404": None,
             "500": None,
@@ -522,7 +528,7 @@ class WorkspaceHierarchyApi:
         )
 
     @validate_arguments
-    def get_workspace_tree(self, **kwargs) -> object:  # noqa: E501
+    def get_workspace_tree(self, **kwargs) -> GetWorkspaceTreeResponse:  # noqa: E501
         """get_workspace_tree  # noqa: E501
 
         Get the full workspace tree showing all workspaces and their nested sub-workspaces.  # noqa: E501
@@ -541,7 +547,7 @@ class WorkspaceHierarchyApi:
         :return: Returns the result object.
                  If the method is called asynchronously,
                  returns the request thread.
-        :rtype: object
+        :rtype: GetWorkspaceTreeResponse
         """
         kwargs["_return_http_data_only"] = True
         if "_preload_content" in kwargs:
@@ -582,7 +588,7 @@ class WorkspaceHierarchyApi:
         :return: Returns the result object.
                  If the method is called asynchronously,
                  returns the request thread.
-        :rtype: tuple(object, status_code(int), headers(HTTPHeaderDict))
+        :rtype: tuple(GetWorkspaceTreeResponse, status_code(int), headers(HTTPHeaderDict))
         """
 
         _params = locals()
@@ -633,7 +639,7 @@ class WorkspaceHierarchyApi:
         _auth_settings = ["BearerAuth"]  # noqa: E501
 
         _response_types_map = {
-            "200": "object",
+            "200": "GetWorkspaceTreeResponse",
             "403": "InvalidAPIKey",
             "500": None,
         }

@@ -50,8 +50,14 @@ from anythingllm_client_asyncio.models.create_workspace_response import (
 from anythingllm_client_asyncio.models.get_workspace_chats_response import (
     GetWorkspaceChatsResponse,
 )
+from anythingllm_client_asyncio.models.get_workspace_children_response import (
+    GetWorkspaceChildrenResponse,
+)
 from anythingllm_client_asyncio.models.get_workspace_response import (
     GetWorkspaceResponse,
+)
+from anythingllm_client_asyncio.models.get_workspace_tree_response import (
+    GetWorkspaceTreeResponse,
 )
 from anythingllm_client_asyncio.models.invalid_api_key import InvalidAPIKey
 from anythingllm_client_asyncio.models.list_workspaces_response import (
@@ -79,3 +85,4 @@ from anythingllm_client_asyncio.models.upload_document_request_metadata import (
     UploadDocumentRequestMetadata,
 )
 from anythingllm_client_asyncio.models.workspace import Workspace
+from anythingllm_client_asyncio.models.workspace_tree_node import WorkspaceTreeNode

@@ -46,7 +46,13 @@ from anythingllm_client.models.create_workspace_response import CreateWorkspaceR
 from anythingllm_client.models.get_workspace_chats_response import (
     GetWorkspaceChatsResponse,
 )
+from anythingllm_client.models.get_workspace_children_response import (
+    GetWorkspaceChildrenResponse,
+)
 from anythingllm_client.models.get_workspace_response import GetWorkspaceResponse
+from anythingllm_client.models.get_workspace_tree_response import (
+    GetWorkspaceTreeResponse,
+)
 from anythingllm_client.models.invalid_api_key import InvalidAPIKey
 from anythingllm_client.models.list_workspaces_response import ListWorkspacesResponse
 from anythingllm_client.models.remove_document_folder_request import (
@@ -65,3 +71,4 @@ from anythingllm_client.models.upload_document_request_metadata import (
     UploadDocumentRequestMetadata,
 )
 from anythingllm_client.models.workspace import Workspace
+from anythingllm_client.models.workspace_tree_node import WorkspaceTreeNode

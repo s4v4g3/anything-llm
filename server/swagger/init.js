@@ -1,6 +1,7 @@
 const swaggerAutogen = require("swagger-autogen")({ openapi: "3.0.0" });
 const fs = require("fs");
 const path = require("path");
+const { Workspace } = require("../models/workspace");
 
 const doc = {
   info: {
@@ -170,6 +171,21 @@ const doc = {
           "pfpFilename",
         ],
       },
+      WorkspaceTreeNode: {
+        allOf: [
+          { $ref: "#/components/schemas/Workspace" },
+          {
+            type: "object",
+            properties: {
+              children: {
+                type: "array",
+                items: { $ref: "#/components/schemas/WorkspaceTreeNode" },
+              },
+            },
+            required: ["children"],
+          },
+        ],
+      },
       CreateWorkspaceResponse: {
         type: "object",
         properties: {
@@ -211,6 +227,26 @@ const doc = {
           },
         },
         required: ["workspace"],
+      },
+      GetWorkspaceTreeResponse: {
+        type: "object",
+        properties: {
+          tree: {
+            type: "array",
+            items: { $ref: "#/components/schemas/WorkspaceTreeNode" },
+          },
+        },
+        required: ["tree"],
+      },
+      GetWorkspaceChildrenResponse: {
+        type: "object",
+        properties: {
+          children: {
+            type: "array",
+            items: { $ref: "#/components/schemas/WorkspaceTreeNode" },
+          },
+        },
+        required: ["tree"],
       },
       GetWorkspaceChatsResponse: {
         type: "object",

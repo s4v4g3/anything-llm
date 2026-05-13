@@ -19,6 +19,7 @@ class WorkspaceTreeNode(BaseModel):
     slug: str
     depth: int
     children: list["WorkspaceTreeNode"] = []
+    description: str | None = None
 
 
 class GetWorkspaceHierarchyResponse(BaseModel):
@@ -30,11 +31,17 @@ class Workspace(BaseModel, extra="ignore"):
     parentWorkspaceId: int | None
     name: str
     slug: str
+    description: str | None
 
 
 class CreateWorkspaceResponse(BaseModel):
     workspace: Workspace
     message: str
+
+
+class UpdateWorkspaceResponse(BaseModel):
+    workspace: Workspace
+    message: str | None = None
 
 
 class AnythingLLMClient(httpx.Client):
@@ -44,17 +51,26 @@ class AnythingLLMClient(httpx.Client):
         )
 
     def create_workspace(
-        self, name: str, parent_id: int | None = None
+        self, name: str, parent_id: int | None = None, description: str | None = None
     ) -> CreateWorkspaceResponse:
         response = self.post(
             "/api/v1/workspace/new",
             json={
                 "name": name,
                 "parentWorkspaceId": parent_id,
+                "description": description,
             },
         )
         response.raise_for_status()
         return CreateWorkspaceResponse(**response.json())
+
+    def update_workspace(self, slug: str, properties: dict) -> UpdateWorkspaceResponse:
+        response = self.post(
+            f"/api/v1/workspace/{slug}/update",
+            json=properties,
+        )
+        response.raise_for_status()
+        return UpdateWorkspaceResponse(**response.json())
 
     def get_workspace_hierarchy(self) -> list[WorkspaceTreeNode]:
         response = self.get("/api/v1/workspaces/tree")
@@ -72,10 +88,18 @@ class AnythingLLMClient(httpx.Client):
             existing_node = next(node for node in tree if node.name == item["name"])
             workspace_id = existing_node.id
             children = existing_node.children
+            if item.get("description") and existing_node.description != item["description"]:
+                print(f"Updating description for workspace '{item['name']}'")
+                self.update_workspace(
+                    slug=existing_node.slug,
+                    properties={"description": item["description"]},
+                )
         else:
             print(f"Creating workspace: {item['name']} (parent_id={parent_id})")
             create_workspace_resp = self.create_workspace(
-                name=item["name"], parent_id=parent_id
+                name=item["name"],
+                parent_id=parent_id,
+                description=item.get("description"),
             )
             workspace_id = create_workspace_resp.workspace.id
             children = []

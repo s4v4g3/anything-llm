@@ -13,26 +13,7 @@ function apiWorkspaceHierarchyEndpoints(app) {
       content: {
         "application/json": {
           schema: {
-            type: 'object',
-            example: {
-              tree: [
-                {
-                  "id": 1,
-                  "name": "Research",
-                  "slug": "research-abc123",
-                  "depth": 0,
-                  "children": [
-                    {
-                      "id": 2,
-                      "name": "Papers",
-                      "slug": "papers-def456",
-                      "depth": 1,
-                      "children": []
-                    }
-                  ]
-                }
-              ]
-            }
+            "$ref": "#/components/schemas/GetWorkspaceTreeResponse"
           }
         }
       }
@@ -70,26 +51,7 @@ function apiWorkspaceHierarchyEndpoints(app) {
       content: {
         "application/json": {
           schema: {
-            type: 'object',
-            example: {
-              tree: [
-                {
-                  "id": 2,
-                  "name": "Papers",
-                  "slug": "papers-def456",
-                  "depth": 1,
-                  "children": [
-                    {
-                      "id": 3,
-                      "name": "ML",
-                      "slug": "ml-ghi789",
-                      "depth": 2,
-                      "children": []
-                    }
-                  ]
-                }
-              ]
-            }
+            "$ref": "#/components/schemas/GetWorkspaceTreeResponse"
           }
         }
       }
@@ -140,17 +102,7 @@ function apiWorkspaceHierarchyEndpoints(app) {
       content: {
         "application/json": {
           schema: {
-            type: 'object',
-            example: {
-              children: [
-                {
-                  "id": 2,
-                  "name": "Papers",
-                  "slug": "papers-def456",
-                  "depth": 1
-                }
-              ]
-            }
+            "$ref": "#/components/schemas/GetWorkspaceChildrenResponse"
           }
         }
       }

@@ -24,7 +24,9 @@ anythingllm_client_asyncio/models/__init__.py
 anythingllm_client_asyncio/models/create_workspace_request.py
 anythingllm_client_asyncio/models/create_workspace_response.py
 anythingllm_client_asyncio/models/get_workspace_chats_response.py
+anythingllm_client_asyncio/models/get_workspace_children_response.py
 anythingllm_client_asyncio/models/get_workspace_response.py
+anythingllm_client_asyncio/models/get_workspace_tree_response.py
 anythingllm_client_asyncio/models/invalid_api_key.py
 anythingllm_client_asyncio/models/list_workspaces_response.py
 anythingllm_client_asyncio/models/remove_document_folder_request.py
@@ -35,6 +37,7 @@ anythingllm_client_asyncio/models/upload_document200_response.py
 anythingllm_client_asyncio/models/upload_document200_response_documents_inner.py
 anythingllm_client_asyncio/models/upload_document_request_metadata.py
 anythingllm_client_asyncio/models/workspace.py
+anythingllm_client_asyncio/models/workspace_tree_node.py
 anythingllm_client_asyncio/py.typed
 anythingllm_client_asyncio/rest.py
 docs/AdminApi.md
@@ -44,7 +47,9 @@ docs/CreateWorkspaceResponse.md
 docs/DocumentsApi.md
 docs/EmbedApi.md
 docs/GetWorkspaceChatsResponse.md
+docs/GetWorkspaceChildrenResponse.md
 docs/GetWorkspaceResponse.md
+docs/GetWorkspaceTreeResponse.md
 docs/InvalidAPIKey.md
 docs/ListWorkspacesResponse.md
 docs/OpenAICompatibleEndpointsApi.md
@@ -60,6 +65,7 @@ docs/UserManagementApi.md
 docs/Workspace.md
 docs/WorkspaceHierarchyApi.md
 docs/WorkspaceThreadsApi.md
+docs/WorkspaceTreeNode.md
 docs/WorkspacesApi.md
 git_push.sh
 pyproject.toml
@@ -75,7 +81,9 @@ test/test_create_workspace_response.py
 test/test_documents_api.py
 test/test_embed_api.py
 test/test_get_workspace_chats_response.py
+test/test_get_workspace_children_response.py
 test/test_get_workspace_response.py
+test/test_get_workspace_tree_response.py
 test/test_invalid_api_key.py
 test/test_list_workspaces_response.py
 test/test_open_ai_compatible_endpoints_api.py
@@ -91,5 +99,6 @@ test/test_user_management_api.py
 test/test_workspace.py
 test/test_workspace_hierarchy_api.py
 test/test_workspace_threads_api.py
+test/test_workspace_tree_node.py
 test/test_workspaces_api.py
 tox.ini

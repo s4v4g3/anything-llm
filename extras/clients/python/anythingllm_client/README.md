@@ -164,7 +164,9 @@ Class | Method | HTTP request | Description
  - [CreateWorkspaceRequest](docs/CreateWorkspaceRequest.md)
  - [CreateWorkspaceResponse](docs/CreateWorkspaceResponse.md)
  - [GetWorkspaceChatsResponse](docs/GetWorkspaceChatsResponse.md)
+ - [GetWorkspaceChildrenResponse](docs/GetWorkspaceChildrenResponse.md)
  - [GetWorkspaceResponse](docs/GetWorkspaceResponse.md)
+ - [GetWorkspaceTreeResponse](docs/GetWorkspaceTreeResponse.md)
  - [InvalidAPIKey](docs/InvalidAPIKey.md)
  - [ListWorkspacesResponse](docs/ListWorkspacesResponse.md)
  - [RemoveDocumentFolderRequest](docs/RemoveDocumentFolderRequest.md)
@@ -175,6 +177,7 @@ Class | Method | HTTP request | Description
  - [UploadDocument200ResponseDocumentsInner](docs/UploadDocument200ResponseDocumentsInner.md)
  - [UploadDocumentRequestMetadata](docs/UploadDocumentRequestMetadata.md)
  - [Workspace](docs/Workspace.md)
+ - [WorkspaceTreeNode](docs/WorkspaceTreeNode.md)
 
 
 <a id="documentation-for-authorization"></a>

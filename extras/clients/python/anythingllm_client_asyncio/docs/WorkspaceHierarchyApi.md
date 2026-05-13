@@ -87,7 +87,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_workspace_children**
-> object get_workspace_children(slug)
+> GetWorkspaceChildrenResponse get_workspace_children(slug)
 
 
 
@@ -100,6 +100,7 @@ Get the direct children of a workspace.
 import time
 import os
 import anythingllm_client_asyncio
+from anythingllm_client_asyncio.models.get_workspace_children_response import GetWorkspaceChildrenResponse
 from anythingllm_client_asyncio.rest import ApiException
 from pprint import pprint
 
@@ -141,7 +142,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**GetWorkspaceChildrenResponse**](GetWorkspaceChildrenResponse.md)
 
 ### Authorization
 
@@ -163,7 +164,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_workspace_subtree**
-> object get_workspace_subtree(slug)
+> GetWorkspaceTreeResponse get_workspace_subtree(slug)
 
 
 
@@ -176,6 +177,7 @@ Get the subtree rooted at a specific workspace.
 import time
 import os
 import anythingllm_client_asyncio
+from anythingllm_client_asyncio.models.get_workspace_tree_response import GetWorkspaceTreeResponse
 from anythingllm_client_asyncio.rest import ApiException
 from pprint import pprint
 
@@ -217,7 +219,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**GetWorkspaceTreeResponse**](GetWorkspaceTreeResponse.md)
 
 ### Authorization
 
@@ -239,7 +241,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_workspace_tree**
-> object get_workspace_tree()
+> GetWorkspaceTreeResponse get_workspace_tree()
 
 
 
@@ -252,6 +254,7 @@ Get the full workspace tree showing all workspaces and their nested sub-workspac
 import time
 import os
 import anythingllm_client_asyncio
+from anythingllm_client_asyncio.models.get_workspace_tree_response import GetWorkspaceTreeResponse
 from anythingllm_client_asyncio.rest import ApiException
 from pprint import pprint
 
@@ -289,7 +292,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-**object**
+[**GetWorkspaceTreeResponse**](GetWorkspaceTreeResponse.md)
 
 ### Authorization
 
